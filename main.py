@@ -133,24 +133,22 @@ class AddDPPage(PageTemplate):
         pwd_entry = tk.Entry(self).grid(row=3, column=1, pady = 5, padx= 20)
         cpwd_entry = tk.Entry(self).grid(row=4, column=1, pady = 5, padx= 20)
 
-        #variable in the dropdown
-        locname_var = StringVar(self)
-        locname_var.set("City Officials")
 
-        # #FIXME: get these from database
-        # loc_options = [
-        #     "atl",
-        #     "nyc",
-        #     "san fran"
-        # ]
+        ## location option
+        #variable in the dropdown
         loc_options = self.get_loc_options()
+        locname_var = StringVar(self)
+        locname_var.set(loc_options[0])
 
         #dropdown box
+        loc_dropdown = apply(OptionMenu, (self, locname_var) + tuple(loc_options)).grid(row=5, column=1, padx = 20, pady = 10, sticky="W")
 
         ## for the datatype option
+        datatype_options = self.get_datatype_options()
         datatype_var = StringVar(self)
-        datatype_var.set("Mold")
-        datatype_option = OptionMenu(self, var, "Mold", "Air Quality reading").grid(row=5, column=1, padx = 20, pady = 10, sticky="W")
+        datatype_var.set(datatype_options[0])
+        # datatype_option = OptionMenu(self, var, "Mold", "Air Quality reading").grid(row=5, column=1, padx = 20, pady = 10, sticky="W")
+        datatype_dropdown = apply(OptionMenu, (self, datatype_var) + tuple(datatype_options)).grid(row=5, column=1, padx = 20, pady = 10, sticky="W")
 
         sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller))
         sub_button.grid(row=7, column=0, padx = 20, pady = 10)
@@ -160,6 +158,9 @@ class AddDPPage(PageTemplate):
 
     def get_loc_options(): #FIXME: get these from database
         return [ "atl","nyc","san fran"]
+
+    def get_datatype_options(): #FIXME: get these from database
+        return [ "Mold","Air Quality reading"]
 
 # class LoginPage(tk.frame):
 #     def __init__(self, master):
