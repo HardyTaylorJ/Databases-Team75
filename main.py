@@ -1,6 +1,6 @@
-import tkinter as tk
-from tkinter import *
-from tkinter import ttk
+import Tkinter as tk
+from Tkinter import *
+# from Tkinter import ttk
 
 LARGE_FONT=("Verdana", 12)
 
@@ -17,7 +17,7 @@ class TKMain (tk.Tk):
         self.frames = {}
 
         # All frames (pages) must be included in this list
-        for F in (LoginPage, RegisterPage, SciPortalPage):
+        for F in (LoginPage, RegisterPage, SciPortalPage, AddDPPage):
 
             frame = F(container, self)
             self.frames[F] = frame
@@ -121,17 +121,15 @@ class SciPortalPage(PageTemplate):
 class AddDPPage(PageTemplate):
     def __init__(self, parent, controller):
         PageTemplate.__init__(self,parent)
-        main_label = tk.Label(self, text="Register", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10)
+        main_label = tk.Label(self, text="Add Data Point", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10)
 
         locn_label = tk.Label(self, text="POI Location Name").grid(row=1, column=0, pady = 5)
         timedate_label = tk.Label(self, text="Time and Date of Data Reading").grid(row=2, column=0, pady = 5)
         datatype_label = tk.Label(self, text="Data Type").grid(row=3, column=0, pady = 5)
         dataval_label = tk.Label(self, text="Data Value").grid(row=4, column=0, pady = 5)
 
-        uname_entry = tk.Entry(self).grid(row=1, column=1, pady = 5, padx= 20)
-        email_entry = tk.Entry(self).grid(row=2, column=1, pady = 5, padx= 20)
-        pwd_entry = tk.Entry(self).grid(row=3, column=1, pady = 5, padx= 20)
-        cpwd_entry = tk.Entry(self).grid(row=4, column=1, pady = 5, padx= 20)
+        timedate_entry = tk.Entry(self).grid(row=2, column=1, pady = 5, padx= 20)
+        dataval_entry = tk.Entry(self).grid(row=4, column=1, pady = 5, padx= 20)
 
 
         ## location option
@@ -140,15 +138,13 @@ class AddDPPage(PageTemplate):
         locname_var = StringVar(self)
         locname_var.set(loc_options[0])
 
-        #dropdown box
-        loc_dropdown = apply(OptionMenu, (self, locname_var) + tuple(loc_options)).grid(row=5, column=1, padx = 20, pady = 10, sticky="W")
+        loc_dropdown = apply(OptionMenu, (self, locname_var) + tuple(loc_options)).grid(row=1, column=1, padx = 20, pady = 10, sticky="W")
 
         ## for the datatype option
         datatype_options = self.get_datatype_options()
         datatype_var = StringVar(self)
         datatype_var.set(datatype_options[0])
-        # datatype_option = OptionMenu(self, var, "Mold", "Air Quality reading").grid(row=5, column=1, padx = 20, pady = 10, sticky="W")
-        datatype_dropdown = apply(OptionMenu, (self, datatype_var) + tuple(datatype_options)).grid(row=5, column=1, padx = 20, pady = 10, sticky="W")
+        datatype_dropdown = apply(OptionMenu, (self, datatype_var) + tuple(datatype_options)).grid(row=3, column=1, padx = 20, pady = 10, sticky="W")
 
         sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller))
         sub_button.grid(row=7, column=0, padx = 20, pady = 10)
@@ -156,10 +152,10 @@ class AddDPPage(PageTemplate):
     def submit(self, controller): #FIXME: probably need to pass an array with values to register with
         controller.show_frame(LoginPage)
 
-    def get_loc_options(): #FIXME: get these from database
+    def get_loc_options(self): #FIXME: get these from database
         return [ "atl","nyc","san fran"]
 
-    def get_datatype_options(): #FIXME: get these from database
+    def get_datatype_options(self): #FIXME: get these from database
         return [ "Mold","Air Quality reading"]
 
 # class LoginPage(tk.frame):
