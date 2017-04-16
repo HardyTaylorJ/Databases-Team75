@@ -1,4 +1,6 @@
 import tkinter as tk
+from tkinter import *
+from tkinter import ttk
 
 LARGE_FONT=("Verdana", 12)
 
@@ -75,21 +77,28 @@ class RegisterPage(PageTemplate):
         PageTemplate.__init__(self,parent)
         main_label = tk.Label(self, text="Register", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10)
 
-        uname_label = tk.Label(self, text="Username").grid(row=1, column=0, pady = 20)
-        email_label = tk.Label(self, text="Email").grid(row=2, column=0, pady = 20)
-        pwd_label = tk.Label(self, text="Password").grid(row=3, column=0, pady = 20)
-        cpwd_label = tk.Label(self, text="Confirm Password").grid(row=4, column=0, pady = 20)
+        uname_label = tk.Label(self, text="Username").grid(row=1, column=0, pady = 5)
+        email_label = tk.Label(self, text="Email").grid(row=2, column=0, pady = 5)
+        pwd_label = tk.Label(self, text="Password").grid(row=3, column=0, pady = 5)
+        cpwd_label = tk.Label(self, text="Confirm Password").grid(row=4, column=0, pady = 5)
+        type_label = tk.Label(self, text="User Type").grid(row=5, column=0, pady = 5)
 
-        uname_entry = tk.Entry(self).grid(row=1, column=1, pady = 20, padx= 20)
-        uname_entry = tk.Entry(self).grid(row=2, column=1, pady = 20, padx= 20)
+        uname_entry = tk.Entry(self).grid(row=1, column=1, pady = 5, padx= 20)
+        email_entry = tk.Entry(self).grid(row=2, column=1, pady = 5, padx= 20)
+        pwd_entry = tk.Entry(self).grid(row=3, column=1, pady = 5, padx= 20)
+        cpwd_entry = tk.Entry(self).grid(row=4, column=1, pady = 5, padx= 20)
 
+        #variable in the dropdown
         var = StringVar(self)
         var.set("City Officials")
+        #set trace on var
+        # observer_name = trace_variable("w", callback)
+
         #dropdown box
-        type_option = OptionMenu(self, var, "City Officials", "City Scientists")
+        type_option = OptionMenu(self, var, "City Officials", "City Scientists").grid(row=5, column=1, padx = 20, pady = 10, sticky="W")
 
         sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller))
-        sub_button.grid(row=4, column=0, padx = 20, pady = 10)
+        sub_button.grid(row=7, column=0, padx = 20, pady = 10)
 
     def submit(self, controller): #FIXME: probably need to pass an array with values to register with
         controller.show_frame(LoginPage)
@@ -97,7 +106,60 @@ class RegisterPage(PageTemplate):
 class SciPortalPage(PageTemplate):
     def __init__(self, parent, controller):
         PageTemplate.__init__(self,parent)
-        main_label = tk.Label(self, text="Choose Functionality", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10)
+        main_label = tk.Label(self, text="Choose Functionality", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10)
+
+        add_dp_button = tk.Button(self, text="Add Data Point", command=lambda :self.add_dp(controller)).grid(row=1, column=0, padx = 20, pady = 10)
+        add_poi_button = tk.Button(self, text="Add POI", command=lambda :self.add_poi(controller)).grid(row=2, column=0, padx = 20, pady = 10)
+
+    def add_dp(self, controller):
+        controller.show_frame(AddDPPage)
+
+    def add_poi(self, controller):
+        controller.show_frame(LoginPage)
+
+
+class AddDPPage(PageTemplate):
+    def __init__(self, parent, controller):
+        PageTemplate.__init__(self,parent)
+        main_label = tk.Label(self, text="Register", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10)
+
+        locn_label = tk.Label(self, text="POI Location Name").grid(row=1, column=0, pady = 5)
+        timedate_label = tk.Label(self, text="Time and Date of Data Reading").grid(row=2, column=0, pady = 5)
+        datatype_label = tk.Label(self, text="Data Type").grid(row=3, column=0, pady = 5)
+        dataval_label = tk.Label(self, text="Data Value").grid(row=4, column=0, pady = 5)
+
+        uname_entry = tk.Entry(self).grid(row=1, column=1, pady = 5, padx= 20)
+        email_entry = tk.Entry(self).grid(row=2, column=1, pady = 5, padx= 20)
+        pwd_entry = tk.Entry(self).grid(row=3, column=1, pady = 5, padx= 20)
+        cpwd_entry = tk.Entry(self).grid(row=4, column=1, pady = 5, padx= 20)
+
+        #variable in the dropdown
+        locname_var = StringVar(self)
+        locname_var.set("City Officials")
+
+        # #FIXME: get these from database
+        # loc_options = [
+        #     "atl",
+        #     "nyc",
+        #     "san fran"
+        # ]
+        loc_options = self.get_loc_options()
+
+        #dropdown box
+
+        ## for the datatype option
+        datatype_var = StringVar(self)
+        datatype_var.set("Mold")
+        datatype_option = OptionMenu(self, var, "Mold", "Air Quality reading").grid(row=5, column=1, padx = 20, pady = 10, sticky="W")
+
+        sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller))
+        sub_button.grid(row=7, column=0, padx = 20, pady = 10)
+
+    def submit(self, controller): #FIXME: probably need to pass an array with values to register with
+        controller.show_frame(LoginPage)
+
+    def get_loc_options(): #FIXME: get these from database
+        return [ "atl","nyc","san fran"]
 
 # class LoginPage(tk.frame):
 #     def __init__(self, master):
