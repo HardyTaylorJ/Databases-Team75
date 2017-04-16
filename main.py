@@ -13,7 +13,9 @@ class TKMain (tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (LoginPage, RegisterPage, SciPortalPage): # All frames (pages) must be included in this list
+
+        # All frames (pages) must be included in this list
+        for F in (LoginPage, RegisterPage, SciPortalPage):
 
             frame = F(container, self)
             self.frames[F] = frame
@@ -74,11 +76,17 @@ class RegisterPage(PageTemplate):
         main_label = tk.Label(self, text="Register", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10)
 
         uname_label = tk.Label(self, text="Username").grid(row=1, column=0, pady = 20)
-        pwd_label = tk.Label(self, text="Password").grid(row=2, column=0, pady = 20)
+        email_label = tk.Label(self, text="Email").grid(row=2, column=0, pady = 20)
+        pwd_label = tk.Label(self, text="Password").grid(row=3, column=0, pady = 20)
+        cpwd_label = tk.Label(self, text="Confirm Password").grid(row=4, column=0, pady = 20)
 
         uname_entry = tk.Entry(self).grid(row=1, column=1, pady = 20, padx= 20)
         uname_entry = tk.Entry(self).grid(row=2, column=1, pady = 20, padx= 20)
 
+        var = StringVar(self)
+        var.set("City Officials")
+        #dropdown box
+        type_option = OptionMenu(self, var, "City Officials", "City Scientists")
 
         sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller))
         sub_button.grid(row=4, column=0, padx = 20, pady = 10)
