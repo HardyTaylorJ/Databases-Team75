@@ -132,7 +132,7 @@ class AddDPPage(PageTemplate):
         dataval_entry = tk.Entry(self).grid(row=4, column=1, pady = 5, padx= 20)
 
 
-        ## location option
+        ## location option menu
         #variable in the dropdown
         loc_options = self.get_loc_options()
         locname_var = StringVar(self)
@@ -140,11 +140,52 @@ class AddDPPage(PageTemplate):
 
         loc_dropdown = apply(OptionMenu, (self, locname_var) + tuple(loc_options)).grid(row=1, column=1, padx = 20, pady = 10, sticky="W")
 
-        ## for the datatype option
+        ## datatype option menu
         datatype_options = self.get_datatype_options()
         datatype_var = StringVar(self)
         datatype_var.set(datatype_options[0])
         datatype_dropdown = apply(OptionMenu, (self, datatype_var) + tuple(datatype_options)).grid(row=3, column=1, padx = 20, pady = 10, sticky="W")
+
+
+        sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller))
+        sub_button.grid(row=7, column=0, padx = 20, pady = 10)
+
+    def submit(self, controller): #FIXME: probably need to pass an array with values to register with
+        controller.show_frame(LoginPage)
+
+    def get_loc_options(self): #FIXME: get these from database
+        return [ "atl","nyc","san fran"]
+
+    def get_datatype_options(self): #FIXME: get these from database
+        return [ "Mold","Air Quality reading"]
+
+class AddPOIPage(PageTemplate):
+    def __init__(self, parent, controller):
+        PageTemplate.__init__(self,parent)
+        main_label = tk.Label(self, text="Add a New Location", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10)
+
+        locn_label = tk.Label(self, text="POI Location Name").grid(row=1, column=0, pady = 5)
+        city_label = tk.Label(self, text="Time and Date of Data Reading").grid(row=2, column=0, pady = 5)
+        state_label = tk.Label(self, text="State").grid(row=3, column=0, pady = 5)
+        zip_label = tk.Label(self, text="Zip Code").grid(row=4, column=0, pady = 5)
+
+        locn_entry = tk.Entry(self).grid(row=1, column=1, pady = 5, padx= 20)
+        dataval_entry = tk.Entry(self).grid(row=4, column=1, pady = 5, padx= 20)
+
+
+        ## city option menu
+        city_options = self.get_city_options()
+        city_var = StringVar(self)
+        city_var.set(city_options[0])
+
+        city_dropdown = apply(OptionMenu, (self, city_var) + tuple(city_options)).grid(row=1, column=1, padx = 20, pady = 10, sticky="W")
+
+        ## state option menu
+        state_options = self.get_state_options()
+        state_var = StringVar(self)
+        state_var.set(state_options[0])
+        state_dropdown = apply(OptionMenu, (self, state_var) + tuple(state_options)).grid(row=3, column=1, padx = 20, pady = 10, sticky="W")
+
 
         sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller))
         sub_button.grid(row=7, column=0, padx = 20, pady = 10)
