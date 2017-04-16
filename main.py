@@ -17,7 +17,7 @@ class TKMain (tk.Tk):
         self.frames = {}
 
         # All frames (pages) must be included in this list
-        for F in (LoginPage, RegisterPage, SciPortalPage, AddDPPage):
+        for F in (LoginPage, RegisterPage, SciPortalPage, AddDPPage, AddPOIPage):
 
             frame = F(container, self)
             self.frames[F] = frame
@@ -115,7 +115,7 @@ class SciPortalPage(PageTemplate):
         controller.show_frame(AddDPPage)
 
     def add_poi(self, controller):
-        controller.show_frame(LoginPage)
+        controller.show_frame(AddPOIPage)
 
 
 class AddDPPage(PageTemplate):
@@ -151,10 +151,10 @@ class AddDPPage(PageTemplate):
         sub_button.grid(row=7, column=0, padx = 20, pady = 10)
 
     def submit(self, controller): #FIXME: probably need to pass an array with values to register with
-        controller.show_frame(LoginPage)
+        controller.show_frame(SciPortalPage)
 
     def get_loc_options(self): #FIXME: get these from database
-        return [ "atl","nyc","san fran"]
+        return [ "Atl, GA","NYC, NY","San Fran, CA"]
 
     def get_datatype_options(self): #FIXME: get these from database
         return [ "Mold","Air Quality reading"]
@@ -165,7 +165,7 @@ class AddPOIPage(PageTemplate):
         main_label = tk.Label(self, text="Add a New Location", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10)
 
         locn_label = tk.Label(self, text="POI Location Name").grid(row=1, column=0, pady = 5)
-        city_label = tk.Label(self, text="Time and Date of Data Reading").grid(row=2, column=0, pady = 5)
+        city_label = tk.Label(self, text="City").grid(row=2, column=0, pady = 5)
         state_label = tk.Label(self, text="State").grid(row=3, column=0, pady = 5)
         zip_label = tk.Label(self, text="Zip Code").grid(row=4, column=0, pady = 5)
 
@@ -178,51 +178,27 @@ class AddPOIPage(PageTemplate):
         city_var = StringVar(self)
         city_var.set(city_options[0])
 
-        city_dropdown = apply(OptionMenu, (self, city_var) + tuple(city_options)).grid(row=1, column=1, padx = 20, pady = 10, sticky="W")
+        city_dropdown = apply(OptionMenu, (self, city_var) + tuple(city_options)).grid(row=3, column=1, padx = 20, pady = 10, sticky="W")
 
         ## state option menu
         state_options = self.get_state_options()
         state_var = StringVar(self)
         state_var.set(state_options[0])
-        state_dropdown = apply(OptionMenu, (self, state_var) + tuple(state_options)).grid(row=3, column=1, padx = 20, pady = 10, sticky="W")
+        state_dropdown = apply(OptionMenu, (self, state_var) + tuple(state_options)).grid(row=2, column=1, padx = 20, pady = 10, sticky="W")
 
 
         sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller))
         sub_button.grid(row=7, column=0, padx = 20, pady = 10)
 
     def submit(self, controller): #FIXME: probably need to pass an array with values to register with
-        controller.show_frame(LoginPage)
+        controller.show_frame(SciPortalPage)
 
-    def get_loc_options(self): #FIXME: get these from database
+    def get_state_options(self): #FIXME: get these from database
         return [ "atl","nyc","san fran"]
 
-    def get_datatype_options(self): #FIXME: get these from database
-        return [ "Mold","Air Quality reading"]
+    def get_city_options(self): #FIXME: get these from database, also pass in state?
+        return [ "GA","TN", "CA", "NY"]
 
-# class LoginPage(tk.frame):
-#     def __init__(self, master):
-#         # self.master = master
-#         # self.frame = tk.Frame(self.master)
-#         self.button1 = tk.Button(self.frame, text = 'New Window', width = 25, command = self.new_window)
-#         self.button1.pack()
-#         self.frame.pack()
-
-#     def login(self):
-#         # self.newWindow = tk.Toplevel(self.master)
-#         self.app = Demo2(self.master)
-
-# class Demo2(tk.frame):
-#     def __init__(self, master):
-#         # self.master = master
-#         # self.frame = tk.Frame(self.master)
-#         self.quitButton = tk.Button(self.frame, text = 'Quit', width = 25, command = self.close_windows)
-#         self.quitButton.pack()
-#         self.frame.pack()
-
-#     def close_windows(self):
-#         self.master.destroy()
-
-print("started anything")
 def main():
     app = TKMain()
     app.mainloop()
