@@ -18,7 +18,7 @@ class TKMain (tk.Tk):
         self.frames = {}
 
         # All frames (pages) must be included in this list
-        for F in (LoginPage, RegisterPage, SciPortalPage, AddDPPage, AddPOIPage, OffPortalPage):
+        for F in (LoginPage, RegisterPage, SciPortalPage, AddDPPage, AddPOIPage, OffPortalPage, AdminPortalPage):
 
             frame = F(container, self)
             self.frames[F] = frame
@@ -71,8 +71,8 @@ class LoginPage(PageTemplate):
 
 
         # controller.show_frame(SciPortalPage)
-        controller.show_frame(OffPortalPage)
-        # controller.show_frame(AdminPortalPage)
+        # controller.show_frame(OffPortalPage)
+        controller.show_frame(AdminPortalPage)
 
 
     def register(self, controller):
@@ -215,15 +215,28 @@ class OffPortalPage(PageTemplate):
         PageTemplate.__init__(self,parent)
         main_label = tk.Label(self, text="Choose Functionality", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10)
 
-        add_dp_button = tk.Button(self, text="Filter/Search POI", command=lambda :self.add_dp(controller)).grid(row=1, column=0, padx = 20, pady = 10)
-        add_poi_button = tk.Button(self, text="POI Report", command=lambda :self.add_poi(controller)).grid(row=2, column=0, padx = 20, pady = 10)
+        fs_poi_button = tk.Button(self, text="Filter/Search POI", command=lambda :self.fs_poi(controller)).grid(row=1, column=0, padx = 20, pady = 10)
+        poi_report_button = tk.Button(self, text="POI Report", command=lambda :self.poi_report(controller)).grid(row=2, column=0, padx = 20, pady = 10)
 
-    def add_dp(self, controller):
+    def fs_poi(self, controller):
         controller.show_frame(LoginPage)
 
-    def add_poi(self, controller):
+    def poi_report(self, controller):
         controller.show_frame(LoginPage)
 
+class AdminPortalPage(PageTemplate):
+    def __init__(self, parent, controller):
+        PageTemplate.__init__(self,parent)
+        main_label = tk.Label(self, text="Choose Functionality", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10)
+
+        pdp_button = tk.Button(self, text="Pending Data Points", command=lambda :self.pdp(controller)).grid(row=1, column=0, padx = 20, pady = 10)
+        poffacc_button = tk.Button(self, text="Pending City Official Accounts", command=lambda :self.poffacc(controller)).grid(row=2, column=0, padx = 20, pady = 10)
+
+    def pdp(self, controller):
+        controller.show_frame(LoginPage)
+
+    def poffacc(self, controller):
+        controller.show_frame(LoginPage)
 
 
 
