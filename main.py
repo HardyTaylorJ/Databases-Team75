@@ -1,5 +1,6 @@
 import Tkinter as tk
 from Tkinter import *
+# import tktable
 # from Tkinter import ttk
 
 LARGE_FONT=("Verdana", 12)
@@ -17,7 +18,7 @@ class TKMain (tk.Tk):
         self.frames = {}
 
         # All frames (pages) must be included in this list
-        for F in (LoginPage, RegisterPage, SciPortalPage, AddDPPage, AddPOIPage):
+        for F in (LoginPage, RegisterPage, SciPortalPage, AddDPPage, AddPOIPage, OffPortalPage):
 
             frame = F(container, self)
             self.frames[F] = frame
@@ -67,7 +68,12 @@ class LoginPage(PageTemplate):
         #
         #if city scientist:
         #   go to city scientist portal
-        controller.show_frame(SciPortalPage)
+
+
+        # controller.show_frame(SciPortalPage)
+        controller.show_frame(OffPortalPage)
+        # controller.show_frame(AdminPortalPage)
+
 
     def register(self, controller):
         controller.show_frame(RegisterPage)
@@ -96,6 +102,9 @@ class RegisterPage(PageTemplate):
 
         #dropdown box
         type_option = OptionMenu(self, var, "City Officials", "City Scientists").grid(row=5, column=1, padx = 20, pady = 10, sticky="W")
+
+        #TODO: add section that depends on user type
+
 
         sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller))
         sub_button.grid(row=7, column=0, padx = 20, pady = 10)
@@ -198,6 +207,25 @@ class AddPOIPage(PageTemplate):
 
     def get_city_options(self): #FIXME: get these from database, also pass in state?
         return [ "GA","TN", "CA", "NY"]
+
+
+
+class OffPortalPage(PageTemplate):
+    def __init__(self, parent, controller):
+        PageTemplate.__init__(self,parent)
+        main_label = tk.Label(self, text="Choose Functionality", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10)
+
+        add_dp_button = tk.Button(self, text="Filter/Search POI", command=lambda :self.add_dp(controller)).grid(row=1, column=0, padx = 20, pady = 10)
+        add_poi_button = tk.Button(self, text="POI Report", command=lambda :self.add_poi(controller)).grid(row=2, column=0, padx = 20, pady = 10)
+
+    def add_dp(self, controller):
+        controller.show_frame(LoginPage)
+
+    def add_poi(self, controller):
+        controller.show_frame(LoginPage)
+
+
+
 
 def main():
     app = TKMain()
