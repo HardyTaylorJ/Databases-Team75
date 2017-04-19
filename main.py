@@ -374,9 +374,11 @@ class ViewPOIPage(PageTemplate):
 
         table = tktable.Table(self, 
         rows = 1,
-        cols = 5
+        cols = 6
         )
         table.grid(row=10, column=0, columnspan=2, padx=5,pady=5)
+        titles = ("Location Name", "City", "State", "Zip Code", "Flagged", "Date Flagged")
+        table.set("row", "0,0", titles)
 
     def apply_filter(self, controller): #FIXME: probably need to pass an array with values to filter with
         controller.show_frame(OffPortalPage) 
