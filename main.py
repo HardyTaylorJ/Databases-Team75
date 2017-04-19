@@ -255,6 +255,74 @@ class POIReportPage(PageTemplate):
         main_label = tk.Label(self, text="POI Report", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10)
 
         # table goes here
+                ##table stuff
+        table_frame = tk.Frame(self)
+        table_frame.grid(row=10,column=0, columnspan=2, padx=0,pady=5)
+        numrows, numcols = 0, 11
+
+        var = tktable.ArrayVar(table_frame)
+        for y in range(numrows):
+            for x in range(numcols):
+                index = "%i,%i" % (y, x)
+                var[index] = index
+
+        table = tktable.Table(table_frame, 
+            rows = numrows,
+            cols = numcols,
+            state='normal',
+            titlerows=1,
+            titlecols=0,
+            colwidth=10,
+            height=10,
+            roworigin=-1,
+            colorigin=-1,
+            selectmode='extended',
+            selecttype='row',
+            rowstretch='all',
+            colstretch='last',
+            # browsecmd=browsecmd,
+            flashmode='on',
+            variable=var,
+            usecommand=0
+        )
+        scroll = Scrollbar(table_frame, orient='vertical', command=table.yview_scroll)
+        table.config(yscrollcommand=scroll.set)
+        scroll.pack(side='right', fill='y')
+        table.pack(expand=1, fill='y')
+        
+        # table.grid(row=0, column=0)
+        # scroll.grid(row=0, column=1)
+        titles = ("Location Name", "City", "State", "Zip Code", "Flagged", "Date Flagged")
+        r = table.index('end').split(',')[0]
+        print r
+        index = r + ",-1"
+        table.set("row", "-1,-1", "Results")
+
+        filters = []
+        apply_button = tk.Button(self, text="Apply Filter", command=lambda :self.apply_filter(controller, table, filters))
+        apply_button.grid(row=9, column=1, padx = 20, pady = 10, sticky="E")
+
+        reset_button = tk.Button(self, text="Reset Filter", command=lambda :self.reset_filter(controller))
+        reset_button.grid(row=9, column=0, padx = 20, pady = 10, sticky="W")
+
+    def apply_filter(self, controller, table, filters): #FIXME: probably need to pass an array with values to filter with
+        titles = ("POI Location", "City", "State", "Mold Min", "Mold Avg", "Mold Max", "AQ Min", "AQ Avg", "AQ Max", "# of Data points", "Flagged?")
+        r = table.index('end').split(',')[0] #get row number <str>
+        idx = r + ',-1'
+        table.set('row', idx, *titles)
+        table.see(idx)
+        filtered_poi = api.get_poi_report()
+        for r in filtered_poi:
+            self.add_new_data(r, table)
+
+    def add_new_data(self, row, table):
+        #table.config(state='normal')
+        table.insert_rows('end', 1)
+        r = table.index('end').split(',')[0] #get row number <str>
+        idx = r + ',-1'
+        table.set('row', idx, *row)
+        table.see(idx)
+        #table.config(state='disabled')
 
         back_button = tk.Button(self, text="Pending Data Points", command=lambda :self.back(controller)).grid(row=2, column=0, padx = 20, pady = 10)
 
@@ -463,6 +531,8 @@ class ViewPOIPage(PageTemplate):
 
     def get_day_options(self):
         return api.get_days("1")
+
+
 
 
 class AdminPortalPage(PageTemplate):
