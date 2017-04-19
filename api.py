@@ -114,5 +114,5 @@ def get_months():
 def get_days(month):
 	return list(range(1, 32))
 
-def get_poi_report()
+def get_poi_report():
 	return [ [1,2,3,4,5,6,7,8,9,10,11,12], reversed([1,2,3,4,5,6,7,8,9,10,11,12]) ]

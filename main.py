@@ -257,7 +257,7 @@ class POIReportPage(PageTemplate):
         # table goes here
                 ##table stuff
         table_frame = tk.Frame(self)
-        table_frame.grid(row=10,column=0, columnspan=2, padx=0,pady=5)
+        table_frame.grid(row=2,column=0, columnspan=2, padx=0,pady=5)
         numrows, numcols = 0, 11
 
         var = tktable.ArrayVar(table_frame)
@@ -299,11 +299,11 @@ class POIReportPage(PageTemplate):
         table.set("row", "-1,-1", "Results")
 
         filters = []
-        apply_button = tk.Button(self, text="Apply Filter", command=lambda :self.apply_filter(controller, table, filters))
-        apply_button.grid(row=9, column=1, padx = 20, pady = 10, sticky="E")
+        apply_button = tk.Button(self, text="Show Report", command=lambda :self.apply_filter(controller, table, filters))
+        apply_button.grid(row=1, column=0, padx = 20, pady = 10, sticky="E")
 
-        reset_button = tk.Button(self, text="Reset Filter", command=lambda :self.reset_filter(controller))
-        reset_button.grid(row=9, column=0, padx = 20, pady = 10, sticky="W")
+        back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
+        back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
 
     def apply_filter(self, controller, table, filters): #FIXME: probably need to pass an array with values to filter with
         titles = ("POI Location", "City", "State", "Mold Min", "Mold Avg", "Mold Max", "AQ Min", "AQ Avg", "AQ Max", "# of Data points", "Flagged?")
@@ -324,7 +324,6 @@ class POIReportPage(PageTemplate):
         table.see(idx)
         #table.config(state='disabled')
 
-        back_button = tk.Button(self, text="Pending Data Points", command=lambda :self.back(controller)).grid(row=2, column=0, padx = 20, pady = 10)
 
     def back(self, controller):
         controller.show_frame(OffPortalPage)
