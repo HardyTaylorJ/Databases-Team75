@@ -25,7 +25,12 @@ def login(username, password):
 	cursor =  conn.cursor()
 	statement = "SELECT * FROM User WHERE USERNAME=%s and PASSWORD=%s"
 	cursor.execute(statement, (username, password))
-	return cursor.fetchone()
+	user = cursor.fetchone()
+	print user
+	if user == None:
+		return "Invalid"
+	print user[3]
+	return user[3]
 	# except:
 	# 	print "Error","Connection Error"
 	# return "Official" #Fixme: change this

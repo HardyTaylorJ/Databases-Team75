@@ -76,11 +76,11 @@ class LoginPage(PageTemplate):
 
         #   go to admin portal
         #
-        if user_type == "Official":
+        if user_type == "City Official":
             controller.show_frame(OffPortalPage)
         #   go to city official portal
         #
-        if user_type == "Scientist":
+        if user_type == "City Scientist":
             controller.show_frame(SciPortalPage)
         #   go to city scientist portal
 
