@@ -227,10 +227,10 @@ class AddPOIPage(PageTemplate):
     def submit(self, controller): #FIXME: probably need to pass an array with values to register with
         controller.show_frame(SciPortalPage)
 
-    def get_state_options(self): #FIXME: get these from database
+    def get_state_options(self): 
         return [ "atl","nyc","san fran"]
 
-    def get_city_options(self): #FIXME: get these from database, also pass in state?
+    def get_city_options(self): #FIXME: pass in state?
         return [ "GA","TN", "CA", "NY"]
 
 
@@ -244,10 +244,10 @@ class OffPortalPage(PageTemplate):
         poi_report_button = tk.Button(self, text="POI Report", command=lambda :self.poi_report(controller)).grid(row=2, column=0, padx = 20, pady = 10)
 
     def fs_poi(self, controller):
-        controller.show_frame(LoginPage)
+        controller.show_frame(ViewPOIPage)
 
     def poi_report(self, controller):
-        controller.show_frame(LoginPage)
+        controller.show_frame(POIReportPage)
 
 class POIReportPage(PageTemplate):
     def __init__(self, parent, controller):
@@ -270,11 +270,86 @@ class ViewPOIPage(PageTemplate):
         city_label = tk.Label(self, text="City").grid(row=2, column=0, pady = 5)
         state_label = tk.Label(self, text="State").grid(row=3, column=0, pady = 5)
         zip_label = tk.Label(self, text="Zip Code").grid(row=4, column=0, pady = 5)
+        zip_label = tk.Label(self, text="Flagged").grid(row=5, column=0, pady = 5)
 
-        locn_entry = tk.Entry(self)
-        locn_entry.grid(row=1, column=1, pady = 5, padx= 20)
-        dataval_entry = tk.Entry(self)
-        dataval_entry.grid(row=4, column=1, pady = 5, padx= 20)
+        ## date chooser stuff
+        dateflag_label = tk.Label(self, text="Date Flagged").grid(row=6, column=0, pady = 5)
+        date_frame = tk.Frame(self)
+        date_frame.grid(row=6, column=1, pady = 5)
+
+        #month
+        month_options = self.get_month_options()
+        month_var = StringVar(self)
+        month_var.set(month_options[0])
+
+        month_dropdown = apply(OptionMenu, (date_frame, month_var) + tuple(month_options))
+        month_dropdown.grid(row=0, column=0, padx = 1, sticky="W")
+        slash_label1 = tk.Label(date_frame, text="/").grid(row=0, column=1, sticky = 'E')
+
+        #day
+        day_options = self.get_day_options()
+        day_var = StringVar(self)
+        day_var.set(day_options[0])
+
+        day_dropdown = apply(OptionMenu, (date_frame, day_var) + tuple(day_options))
+        day_dropdown.grid(row=0, column=2, padx = 1, sticky="W")
+        slash_label2 = tk.Label(date_frame, text="/").grid(row=0, column=3,sticky = 'E')
+
+        #year
+        year_options = self.get_year_options()
+        year_var = StringVar(self)
+        year_var.set(year_options[0])
+
+        year_dropdown = apply(OptionMenu, (date_frame, year_var) + tuple(year_options))
+        year_dropdown.grid(row=0, column=4, padx = 1, sticky="W")
+
+        dateto_label = tk.Label(self, text="to").grid(row=7, column=1, pady = 0)
+
+        ##end date stuff
+        end_date_frame = tk.Frame(self)
+        end_date_frame.grid(row=8, column=1, pady = 5)
+        #month
+        month_options = self.get_month_options()
+        end_month_var = StringVar(self)
+        end_month_var.set(month_options[0])
+
+        end_month_dropdown = apply(OptionMenu, (end_date_frame, end_month_var) + tuple(month_options))
+        end_month_dropdown.grid(row=0, column=0, padx = 1, sticky="W")
+        slash_label1 = tk.Label(end_date_frame, text="/").grid(row=0, column=1, sticky = 'E')
+
+        #day
+        day_options = self.get_day_options()
+        end_day_var = StringVar(self)
+        end_day_var.set(day_options[0])
+
+        end_day_dropdown = apply(OptionMenu, (end_date_frame, end_day_var) + tuple(day_options))
+        end_day_dropdown.grid(row=0, column=2, padx = 1, sticky="W")
+        slash_label2 = tk.Label(end_date_frame, text ="/").grid(row=0, column=3,sticky = 'E')
+
+        #year
+        year_options = self.get_year_options()
+        end_year_var = StringVar(self)
+        end_year_var.set(year_options[0])
+
+        end_year_dropdown = apply(OptionMenu, (end_date_frame, end_year_var) + tuple(year_options))
+        end_year_dropdown.grid(row=0, column=4, padx = 1, sticky="W")
+
+
+
+        zip_entry = tk.Entry(self)
+        zip_entry.grid(row=4, column=1, pady = 5, padx= 20)
+
+        flag_var = IntVar()
+        flag_check = Checkbutton(self, variable=flag_var)
+        flag_check.grid(row=5, column=1, pady = 5)
+
+        ## loc option menu
+        loc_options = self.get_loc_options()
+        loc_var = StringVar(self)
+        loc_var.set(loc_options[0])
+
+        loc_dropdown = apply(OptionMenu, (self, loc_var) + tuple(loc_options))
+        loc_dropdown.grid(row=1, column=1, padx = 20, pady = 10, sticky="W")
 
         ## city option menu
         city_options = self.get_city_options()
@@ -291,17 +366,41 @@ class ViewPOIPage(PageTemplate):
         state_dropdown = apply(OptionMenu, (self, state_var) + tuple(state_options))
         state_dropdown.grid(row=2, column=1, padx = 20, pady = 10, sticky="W")
 
-        sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller))
-        sub_button.grid(row=7, column=0, padx = 20, pady = 10)
+        apply_button = tk.Button(self, text="Apply Filter", command=lambda :self.apply_filter(controller))
+        apply_button.grid(row=9, column=1, padx = 20, pady = 10, sticky="E")
 
-    def submit(self, controller): #FIXME: probably need to pass an array with values to register with
-        controller.show_frame(SciPortalPage)
+        reset_button = tk.Button(self, text="Apply Filter", command=lambda :self.reset_filter(controller))
+        reset_button.grid(row=9, column=0, padx = 20, pady = 10, sticky="W")
 
-    def get_state_options(self): #FIXME: get these from database
+        table = tktable.Table(self, 
+        rows = 1,
+        cols = 5
+        )
+        table.grid(row=10, column=0, columnspan=2, padx=5,pady=5)
+
+    def apply_filter(self, controller): #FIXME: probably need to pass an array with values to filter with
+        controller.show_frame(OffPortalPage) 
+
+    def reset_filter(self, controller): #FIXME: probably need to pass an array with values to filter with
+        controller.show_frame(OffPortalPage)
+
+    def get_loc_options(self):
+        return api.get_poi_names()
+
+    def get_state_options(self): 
         return api.get_states()
 
-    def get_city_options(self): #FIXME: get these from database, also pass in state?
+    def get_city_options(self): #FIXME: pass in state?
         return api.get_cities()
+
+    def get_year_options(self):
+        return api.get_years()
+
+    def get_month_options(self):
+        return api.get_months()
+
+    def get_day_options(self):
+        return api.get_days("1")
 
 
 class AdminPortalPage(PageTemplate):

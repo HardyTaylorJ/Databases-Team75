@@ -74,6 +74,20 @@ def get_pending_datapoints():
 def get_pending_officials():
 	return
 
+def get_poi(filters):
+	"""
+	@param dictionary filters 
+	pending
+	location_name
+	city
+	state
+	zip
+	flagged
+	date_flagged_start
+	date_flagged_end
+	"""
+	# for k in filters.keys
+
 def get_datapoints(filters):
 	"""
 	@param dictionary filters 
@@ -87,4 +101,14 @@ def get_datapoints(filters):
 	date_flagged_end
 	"""
 	# for k in filters.keys
+
+def get_years():
+	return list(reversed(range(1900, 2018)))
+
+
+def get_months():
+	return list(range(1, 13))
+
+def get_days(month):
+	return list(range(1, 32))
 
