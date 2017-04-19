@@ -87,7 +87,7 @@ class LoginPage(PageTemplate):
 
         # controller.show_frame(SciPortalPage)
 
-        controller.show_frame(OffPortalPage)
+        # controller.show_frame(OffPortalPage)
         # controller.show_frame(AdminPortalPage)
 
 

@@ -1,3 +1,11 @@
+from Tkinter import*
+#from tkinter import messagebox
+import base64
+import pymysql as sql
+import os
+from datetime import date
+from datetime import datetime
+import datetime
 
 def login(username, password):
 	""" 
@@ -9,6 +17,17 @@ def login(username, password):
 	"Admin"
 	"Invalid"
 	"""
+	# try:
+	conn = sql.connect(host = "academic-mysql.cc.gatech.edu",
+                        passwd = "XzXVaWnA",
+                        user = "cs4400_75",
+                        db = "cs4400_75") 
+	cursor =  conn.cursor()
+	statement = "SELECT * FROM User"
+	cursor.execute(statement)
+	print cursor.fetchall()
+	# except:
+	# 	print "Error","Connection Error"
 	return "Official" #Fixme: change this
 
 def add_user(username, password, email, user_type, type_args):
