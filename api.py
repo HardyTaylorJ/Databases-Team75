@@ -76,7 +76,7 @@ def get_pending_officials():
 
 def get_poi(filters):
 	"""
-	@param dictionary filters 
+	@param array filters 
 	pending
 	location_name
 	city
@@ -86,7 +86,9 @@ def get_poi(filters):
 	date_flagged_start
 	date_flagged_end
 	"""
-	# for k in filters.keys
+	# for k in filters
+
+	return [["GT", "1", "2", "3", "4", "5"],["TECH", "a", "b", "c", "d", "e"],["GATECH", "q", "w", "e", "r", "t"]]#FIXME: remove this
 
 def get_datapoints(filters):
 	"""

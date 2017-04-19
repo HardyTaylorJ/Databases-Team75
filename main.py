@@ -264,18 +264,18 @@ class POIReportPage(PageTemplate):
 class ViewPOIPage(PageTemplate):
     def __init__(self, parent, controller):
         PageTemplate.__init__(self,parent)
-        main_label = tk.Label(self, text="Add a New Location", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10)
+        main_label = tk.Label(self, text="View POI", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10, padx=20)
 
         locn_label = tk.Label(self, text="POI Location Name").grid(row=1, column=0, pady = 5, sticky = 'E')
         city_label = tk.Label(self, text="City").grid(row=2, column=0, pady = 5, sticky = 'E')
         state_label = tk.Label(self, text="State").grid(row=3, column=0, pady = 5, sticky = 'E')
         zip_label = tk.Label(self, text="Zip Code").grid(row=4, column=0, pady = 5, sticky = 'E')
-        zip_label = tk.Label(self, text="Flagged").grid(row=5, column=0, pady = 5, sticky = 'E')
+        flag_label = tk.Label(self, text="Flagged").grid(row=5, column=0, pady = 5, sticky = 'E')
 
         ## date chooser stuff
-        dateflag_label = tk.Label(self, text="Date Flagged").grid(row=6, column=0, pady = 5)
+        dateflag_label = tk.Label(self, text="Date Flagged").grid(row=6, column=0, pady = 5, sticky="E")
         date_frame = tk.Frame(self)
-        date_frame.grid(row=6, column=1, pady = 5)
+        date_frame.grid(row=6, column=1, pady = 5, sticky="W", padx = 20)
 
         #month
         month_options = self.get_month_options()
@@ -307,7 +307,7 @@ class ViewPOIPage(PageTemplate):
 
         ##end date stuff
         end_date_frame = tk.Frame(self)
-        end_date_frame.grid(row=8, column=1, pady = 5)
+        end_date_frame.grid(row=8, column=1, pady = 5, sticky="W", padx = 20)
         #month
         month_options = self.get_month_options()
         end_month_var = StringVar(self)
@@ -337,11 +337,11 @@ class ViewPOIPage(PageTemplate):
 
 
         zip_entry = tk.Entry(self)
-        zip_entry.grid(row=4, column=1, pady = 5, padx= 20)
+        zip_entry.grid(row=4, column=1, pady = 5, padx= 20, sticky="W")
 
         flag_var = IntVar()
         flag_check = Checkbutton(self, variable=flag_var)
-        flag_check.grid(row=5, column=1, pady = 5)
+        flag_check.grid(row=5, column=1, pady = 5, sticky="W", padx = 20)
 
         ## loc option menu
         loc_options = self.get_loc_options()
@@ -385,15 +385,15 @@ class ViewPOIPage(PageTemplate):
             rows = numrows,
             cols = numcols,
             state='normal',
-            titlerows=0,
+            titlerows=1,
             titlecols=0,
-            width=22,
+            colwidth=10,
             height=10,
             roworigin=-1,
             colorigin=-1,
             selectmode='extended',
             selecttype='row',
-            rowstretch='unset',
+            rowstretch='all',
             colstretch='last',
             # browsecmd=browsecmd,
             flashmode='on',
@@ -403,29 +403,47 @@ class ViewPOIPage(PageTemplate):
         scroll = Scrollbar(table_frame, orient='vertical', command=table.yview_scroll)
         table.config(yscrollcommand=scroll.set)
         scroll.pack(side='right', fill='y')
-        table.pack(expand=1, fill='both')
+        table.pack(expand=1, fill='y')
+        
+        # table.grid(row=0, column=0)
+        # scroll.grid(row=0, column=1)
         titles = ("Location Name", "City", "State", "Zip Code", "Flagged", "Date Flagged")
         r = table.index('end').split(',')[0]
         print r
         index = r + ",-1"
-        table.set("row", "-1,-1", titles)
+        table.set("row", "-1,-1", "Results")
 
-        apply_button = tk.Button(self, text="Apply Filter", command=lambda :self.apply_filter(controller, table))
+        filters = []
+        apply_button = tk.Button(self, text="Apply Filter", command=lambda :self.apply_filter(controller, table, filters))
         apply_button.grid(row=9, column=1, padx = 20, pady = 10, sticky="E")
 
         reset_button = tk.Button(self, text="Reset Filter", command=lambda :self.reset_filter(controller))
         reset_button.grid(row=9, column=0, padx = 20, pady = 10, sticky="W")
 
-    def apply_filter(self, controller, table): #FIXME: probably need to pass an array with values to filter with
+    def apply_filter(self, controller, table, filters): #FIXME: probably need to pass an array with values to filter with
         titles = ("Location Name", "City", "State", "Zip Code", "Flagged", "Date Flagged")
-        table.insert_rows('end', 1)
         r = table.index('end').split(',')[0] #get row number <str>
-        # titles = (r,) + titles
         idx = r + ',-1'
         table.set('row', idx, *titles)
         table.see(idx)
+        filtered_poi = api.get_poi(filters)
+        for r in filtered_poi:
+            self.add_new_data(r, table)
+
+    def add_new_data(self, row, table):
+        #table.config(state='normal')
+        table.insert_rows('end', 1)
+        r = table.index('end').split(',')[0] #get row number <str>
+        idx = r + ',-1'
+        table.set('row', idx, *row)
+        table.see(idx)
+        #table.config(state='disabled')
+
 
     def reset_filter(self, controller): #FIXME: probably need to pass an array with values to filter with
+        controller.show_frame(OffPortalPage)
+
+    def back(self, controller): #FIXME: probably need to pass an array with values to filter with
         controller.show_frame(OffPortalPage)
 
     def get_loc_options(self):
