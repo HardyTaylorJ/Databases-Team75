@@ -23,12 +23,12 @@ def login(username, password):
                         user = "cs4400_75",
                         db = "cs4400_75") 
 	cursor =  conn.cursor()
-	statement = "SELECT * FROM User"
-	cursor.execute(statement)
-	print cursor.fetchall()
+	statement = "SELECT * FROM User WHERE USERNAME=%s and PASSWORD=%s"
+	cursor.execute(statement, (username, password))
+	return cursor.fetchone()
 	# except:
 	# 	print "Error","Connection Error"
-	return "Official" #Fixme: change this
+	# return "Official" #Fixme: change this
 
 def add_user(username, password, email, user_type, type_args):
 	""" 
