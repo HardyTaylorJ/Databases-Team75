@@ -266,11 +266,11 @@ class ViewPOIPage(PageTemplate):
         PageTemplate.__init__(self,parent)
         main_label = tk.Label(self, text="Add a New Location", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10)
 
-        locn_label = tk.Label(self, text="POI Location Name").grid(row=1, column=0, pady = 5)
-        city_label = tk.Label(self, text="City").grid(row=2, column=0, pady = 5)
-        state_label = tk.Label(self, text="State").grid(row=3, column=0, pady = 5)
-        zip_label = tk.Label(self, text="Zip Code").grid(row=4, column=0, pady = 5)
-        zip_label = tk.Label(self, text="Flagged").grid(row=5, column=0, pady = 5)
+        locn_label = tk.Label(self, text="POI Location Name").grid(row=1, column=0, pady = 5, sticky = 'E')
+        city_label = tk.Label(self, text="City").grid(row=2, column=0, pady = 5, sticky = 'E')
+        state_label = tk.Label(self, text="State").grid(row=3, column=0, pady = 5, sticky = 'E')
+        zip_label = tk.Label(self, text="Zip Code").grid(row=4, column=0, pady = 5, sticky = 'E')
+        zip_label = tk.Label(self, text="Flagged").grid(row=5, column=0, pady = 5, sticky = 'E')
 
         ## date chooser stuff
         dateflag_label = tk.Label(self, text="Date Flagged").grid(row=6, column=0, pady = 5)
@@ -366,22 +366,64 @@ class ViewPOIPage(PageTemplate):
         state_dropdown = apply(OptionMenu, (self, state_var) + tuple(state_options))
         state_dropdown.grid(row=2, column=1, padx = 20, pady = 10, sticky="W")
 
-        apply_button = tk.Button(self, text="Apply Filter", command=lambda :self.apply_filter(controller))
+
+
+
+
+        ##table stuff
+        table_frame = tk.Frame(self)
+        table_frame.grid(row=10,column=0, columnspan=2, padx=0,pady=5)
+        numrows, numcols = 0, 6
+
+        var = tktable.ArrayVar(table_frame)
+        for y in range(numrows):
+            for x in range(numcols):
+                index = "%i,%i" % (y, x)
+                var[index] = index
+
+        table = tktable.Table(table_frame, 
+            rows = numrows,
+            cols = numcols,
+            state='normal',
+            titlerows=0,
+            titlecols=0,
+            width=22,
+            height=10,
+            roworigin=-1,
+            colorigin=-1,
+            selectmode='extended',
+            selecttype='row',
+            rowstretch='unset',
+            colstretch='last',
+            # browsecmd=browsecmd,
+            flashmode='on',
+            variable=var,
+            usecommand=0
+        )
+        scroll = Scrollbar(table_frame, orient='vertical', command=table.yview_scroll)
+        table.config(yscrollcommand=scroll.set)
+        scroll.pack(side='right', fill='y')
+        table.pack(expand=1, fill='both')
+        titles = ("Location Name", "City", "State", "Zip Code", "Flagged", "Date Flagged")
+        r = table.index('end').split(',')[0]
+        print r
+        index = r + ",-1"
+        table.set("row", "-1,-1", titles)
+
+        apply_button = tk.Button(self, text="Apply Filter", command=lambda :self.apply_filter(controller, table))
         apply_button.grid(row=9, column=1, padx = 20, pady = 10, sticky="E")
 
-        reset_button = tk.Button(self, text="Apply Filter", command=lambda :self.reset_filter(controller))
+        reset_button = tk.Button(self, text="Reset Filter", command=lambda :self.reset_filter(controller))
         reset_button.grid(row=9, column=0, padx = 20, pady = 10, sticky="W")
 
-        table = tktable.Table(self, 
-        rows = 1,
-        cols = 6
-        )
-        table.grid(row=10, column=0, columnspan=2, padx=5,pady=5)
+    def apply_filter(self, controller, table): #FIXME: probably need to pass an array with values to filter with
         titles = ("Location Name", "City", "State", "Zip Code", "Flagged", "Date Flagged")
-        table.set("row", "0,0", titles)
-
-    def apply_filter(self, controller): #FIXME: probably need to pass an array with values to filter with
-        controller.show_frame(OffPortalPage) 
+        table.insert_rows('end', 1)
+        r = table.index('end').split(',')[0] #get row number <str>
+        # titles = (r,) + titles
+        idx = r + ',-1'
+        table.set('row', idx, *titles)
+        table.see(idx)
 
     def reset_filter(self, controller): #FIXME: probably need to pass an array with values to filter with
         controller.show_frame(OffPortalPage)
