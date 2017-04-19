@@ -1,8 +1,8 @@
 import Tkinter as tk
 from Tkinter import *
-# import tktable
+import api
+import tktable
 # from Tkinter import ttk
-
 LARGE_FONT=("Verdana", 12)
 
 class TKMain (tk.Tk):
@@ -18,7 +18,7 @@ class TKMain (tk.Tk):
         self.frames = {}
 
         # All frames (pages) must be included in this list
-        for F in (LoginPage, RegisterPage, SciPortalPage, AddDPPage, AddPOIPage, OffPortalPage, AdminPortalPage):
+        for F in (LoginPage, RegisterPage, SciPortalPage, AddDPPage, AddPOIPage, OffPortalPage, AdminPortalPage, ViewPOIPage, POIReportPage):
 
             frame = F(container, self)
             self.frames[F] = frame
@@ -29,6 +29,7 @@ class TKMain (tk.Tk):
     def show_frame(self,cont):
         frame = self.frames[cont]
         frame.tkraise()
+
 
 class PageTemplate(tk.Frame):
     def __init__(self, parent):
@@ -42,37 +43,52 @@ class LoginPage(PageTemplate):
         uname_label = tk.Label(self, text="Username").grid(row=1, column=0, pady = 20)
         pwd_label = tk.Label(self, text="Password").grid(row=2, column=0, pady = 20)
 
-        uname_entry = tk.Entry(self).grid(row=1, column=1, pady = 20, padx= 20)
-        pwd_entry = tk.Entry(self).grid(row=2, column=1, pady = 20, padx= 20)
+        uname_entry = tk.Entry(self)
+        uname_entry.grid(row=1, column=1, pady = 20, padx= 20)
+        pwd_entry = tk.Entry(self)
+        pwd_entry.grid(row=2, column=1, pady = 20, padx= 20)
 
 
         reg_button = tk.Button(self, text="Register", command=lambda :self.register(controller))
         reg_button.grid(row=4, column=0, padx = 20, pady = 10)
 
-        login_button = tk.Button(self, text="Login", command=lambda :self.login(controller))
+        login_button = tk.Button(self, text="Login", command=lambda :self.login(controller, uname_entry.get(), pwd_entry.get()))
         login_button.grid(row=4, column=1, padx = 20, sticky="E")
 
+        # table = tktable.Table(parent, 
+        #     rows = 5,
+        #     cols = 5
+        # )
+        # table.grid(row=5)
 
 
-    def login(self, controller):
+
+    def login(self, controller, uname, pwd):
+        user_type  = api.login(uname, pwd)
         #check login creds
         #
-        #if not valid:
-        #   give login error and return
+        if user_type == "Invalid":
+            return
+        #   create popup window sayig its invalid
         #
-        #if admin:
+        if user_type == "Admin":
+            controller.show_frame(AdminPortalPage)
+
         #   go to admin portal
         #
-        #if city official:
+        if user_type == "Official":
+            controller.show_frame(OffPortalPage)
         #   go to city official portal
         #
-        #if city scientist:
+        if user_type == "Scientist":
+            controller.show_frame(SciPortalPage)
         #   go to city scientist portal
 
 
         # controller.show_frame(SciPortalPage)
-        # controller.show_frame(OffPortalPage)
-        controller.show_frame(AdminPortalPage)
+
+        controller.show_frame(OffPortalPage)
+        # controller.show_frame(AdminPortalPage)
 
 
     def register(self, controller):
@@ -223,6 +239,58 @@ class OffPortalPage(PageTemplate):
 
     def poi_report(self, controller):
         controller.show_frame(LoginPage)
+
+class POIReportPage(PageTemplate):
+    def __init__(self, parent, controller):
+        PageTemplate.__init__(self,parent)
+        main_label = tk.Label(self, text="POI Report", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10)
+
+        # table goes here
+
+        back_button = tk.Button(self, text="Pending Data Points", command=lambda :self.back(controller)).grid(row=2, column=0, padx = 20, pady = 10)
+
+    def back(self, controller):
+        controller.show_frame(OffPortalPage)
+
+class ViewPOIPage(PageTemplate):
+    def __init__(self, parent, controller):
+        PageTemplate.__init__(self,parent)
+        main_label = tk.Label(self, text="View POI", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10)
+
+        locn_label = tk.Label(self, text="POI Location Name").grid(row=1, column=0, pady = 5)
+        city_label = tk.Label(self, text="City").grid(row=2, column=0, pady = 5)
+        state_label = tk.Label(self, text="State").grid(row=3, column=0, pady = 5)
+        zip_label = tk.Label(self, text="Zip Code").grid(row=4, column=0, pady = 5)
+
+        locn_entry = tk.Entry(self).grid(row=1, column=1, pady = 5, padx= 20)
+        dataval_entry = tk.Entry(self).grid(row=4, column=1, pady = 5, padx= 20)
+
+
+        ## city option menu
+        city_options = self.get_city_options()
+        city_var = StringVar(self)
+        city_var.set(city_options[0])
+
+        city_dropdown = apply(OptionMenu, (self, city_var) + tuple(city_options)).grid(row=3, column=1, padx = 20, pady = 10, sticky="W")
+
+        ## state option menu
+        state_options = self.get_state_options()
+        state_var = StringVar(self)
+        state_var.set(state_options[0])
+        state_dropdown = apply(OptionMenu, (self, state_var) + tuple(state_options)).grid(row=2, column=1, padx = 20, pady = 10, sticky="W")
+
+
+        sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller))
+        sub_button.grid(row=7, column=0, padx = 20, pady = 10)
+
+    def submit(self, controller): #FIXME: probably need to pass an array with values to register with
+        controller.show_frame(SciPortalPage)
+
+    def get_state_options(self): #FIXME: get these from database
+        return [ "atl","nyc","san fran"]
+
+    def get_city_options(self): #FIXME: get these from database, also pass in state?
+        return [ "GA","TN", "CA", "NY"]
 
 class AdminPortalPage(PageTemplate):
     def __init__(self, parent, controller):
