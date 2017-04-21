@@ -57,7 +57,7 @@ def add_user(username, pwd, confpwd, email, user_type, type_args):
 	"""
 
 	if confpwd == pwd:
-		users = cursor.execute("SELECT * FROM USER WHERE Username = %s",(user)).fetchone()
+		users = cursor.execute("SELECT * FROM USER WHERE Username = %s",(username)).fetchone()
 		if len(users) == 0:
 			cursor.execute("INSERT INTO User VALUES (%s, %s, %s, %s)", (username, email, pwd, user_type))
 			if user_type == "City Official":
@@ -183,3 +183,9 @@ def get_pending_dp():
 
 def get_pending_off():
 	return [list(range(1, 6)), list(reversed(range(1, 6)))]
+
+def get_poi_detail(data_type, data_min, data_max, timedate_start, timedate_end):
+	"""
+	@returns array of length 3 arrays of format [data type, data value, timedate]
+	"""
+	return [[11,22,33][66,77,88]]

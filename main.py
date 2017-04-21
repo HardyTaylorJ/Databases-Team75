@@ -640,6 +640,36 @@ class PDPPage(PageTemplate):
 
         # table goes here
                 ##table stuff
+        # table_frame = tk.Frame(self)
+        # table_frame.grid(row=2,column=0, columnspan=2, padx=5,pady=5)
+        # numrows, numcols = 0, 6
+
+        # titles = ["Select", "Location", "Datatype", "Data Value", "Time&Date of data reading"]
+        # cell_frames = []
+        # # cell_frames.append(self.add_titles(table_frame, 0, titles, "darkgray")) ##a9a9a9
+        # self.add_titles(table_frame, 0, titles, "darkgray") ##a9a9a9
+        # pending_data_points = api.get_pending_dp()
+
+        # for i in range(0,len(pending_data_points)):
+        #     cell_frames.append(self.add_row(table_frame, i+1, pending_data_points[i], "white"))
+
+
+        filters = []
+        # apply_button = tk.Button(self, text="Show Report", command=lambda :self.apply_filter(controller, table, filters))
+        # apply_button.grid(row=1, column=0, padx = 20, pady = 10, sticky="E")
+        self.cell_frames, self.table_frame = self.build_table()
+
+
+
+        back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
+        back_button.grid(row=9, column=0, padx = 20, pady = 10)
+
+        reject_button = tk.Button(self, text="Reject", command=lambda :self.reject_selected(self.cell_frames, self.table_frame))
+        reject_button.grid(row=9, column=1, padx = 20, pady = 10, sticky = "W")
+        accept_button = tk.Button(self, text="Acept", command=lambda :self.accept_selected(self.cell_frames, self.table_frame))
+        accept_button.grid(row=9, column=1, padx = 20, pady = 10, sticky = "E")
+
+    def build_table(self):
         table_frame = tk.Frame(self)
         table_frame.grid(row=2,column=0, columnspan=2, padx=5,pady=5)
         numrows, numcols = 0, 6
@@ -653,30 +683,30 @@ class PDPPage(PageTemplate):
         for i in range(0,len(pending_data_points)):
             cell_frames.append(self.add_row(table_frame, i+1, pending_data_points[i], "white"))
 
+        return cell_frames, table_frame
 
-        filters = []
-        # apply_button = tk.Button(self, text="Show Report", command=lambda :self.apply_filter(controller, table, filters))
-        # apply_button.grid(row=1, column=0, padx = 20, pady = 10, sticky="E")
 
-        back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
-        back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
 
-        reject_button = tk.Button(self, text="Reject", command=lambda :self.reject_selected(cell_frames))
-        reject_button.grid(row=9, column=2, padx = 20, pady = 10, columnspan = 2)
-        accept_button = tk.Button(self, text="Acept", command=lambda :self.accept_selected(cell_frames))
-        accept_button.grid(row=9, column=2, padx = 20, pady = 10, columnspan = 2)
 
-    def accept_selected(self, cell_frames):
+    def accept_selected(self, cell_frames, table_frame):
         for f in cell_frames:
             if f[0].get() ==1:
                 api.accept_dp(f[1])
+                table_frame.grid_forget()
+                table_frame.destroy()
+                self.cell_frames , self.table_frame =  build_table
+
+
             
         return
 
-    def reject_selected(self, cell_frames):
+    def reject_selected(self, cell_frames, table_frame):
         for f in cell_frames:
             if f[0].get() ==1:
                 api.reject_dp(f[1])
+                table_frame.grid_forget()
+                table_frame.destroy()
+                self.cell_frames , self.table_frame =  build_table
             
         return
 
@@ -753,10 +783,37 @@ class POPage(PageTemplate):
 
         # table goes here
                 ##table stuff
+        # table_frame = tk.Frame(self)
+        # table_frame.grid(row=2,column=0, columnspan=2, padx=5,pady=5)
+        # numrows, numcols = 0, 6
+
+        # titles = ["Select", "Username", "Email", "City", "State", "Title"]
+        # cell_frames = []
+        # # cell_frames.append(self.add_titles(table_frame, 0, titles, "darkgray")) ##a9a9a9
+        # self.add_titles(table_frame, 0, titles, "darkgray") ##a9a9a9
+        # pending_data_points = api.get_pending_off()
+
+        # for i in range(0,len(pending_data_points)):
+        #     cell_frames.append(self.add_row(table_frame, i+1, pending_data_points[i], "white"))
+
+
+
+        # apply_button = tk.Button(self, text="Show Report", command=lambda :self.apply_filter(controller, table, filters))
+        # apply_button.grid(row=1, column=0, padx = 20, pady = 10, sticky="E")
+
+        self.cell_frames, self.table_frame = self.build_table()
+
+        back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
+        back_button.grid(row=9, column=0, padx = 20, pady = 10)
+        reject_button = tk.Button(self, text="Reject", command=lambda :self.reject_selected(self.cell_frames, self.table_frame))
+        reject_button.grid(row=9, column=1, padx = 30, pady = 10, sticky = "W")
+        accept_button = tk.Button(self, text="Acept", command=lambda :self.accept_selected(self.cell_frames, self.table_frame))
+        accept_button.grid(row=9, column=1, padx = 30, pady = 10, sticky = "E")
+
+    def build_table(self):
         table_frame = tk.Frame(self)
         table_frame.grid(row=2,column=0, columnspan=2, padx=5,pady=5)
         numrows, numcols = 0, 6
-
         titles = ["Select", "Username", "Email", "City", "State", "Title"]
         cell_frames = []
         # cell_frames.append(self.add_titles(table_frame, 0, titles, "darkgray")) ##a9a9a9
@@ -766,29 +823,28 @@ class POPage(PageTemplate):
         for i in range(0,len(pending_data_points)):
             cell_frames.append(self.add_row(table_frame, i+1, pending_data_points[i], "white"))
 
+        return cell_frames, table_frame
 
 
-        # apply_button = tk.Button(self, text="Show Report", command=lambda :self.apply_filter(controller, table, filters))
-        # apply_button.grid(row=1, column=0, padx = 20, pady = 10, sticky="E")
-
-        back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
-        back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
-        reject_button = tk.Button(self, text="Reject", command=lambda :self.reject_selected(cell_frames))
-        reject_button.grid(row=9, column=2, padx = 20, pady = 10, columnspan = 2)
-        accept_button = tk.Button(self, text="Acept", command=lambda :self.accept_selected(cell_frames))
-        accept_button.grid(row=9, column=2, padx = 20, pady = 10, columnspan = 2)
-
-    def accept_selected(self, cell_frames):
+    def accept_selected(self, cell_frames, table_frame):
         for f in cell_frames:
             if f[0].get() ==1:
                 api.accept_official(f[1])
+                table_frame.grid_forget()
+                table_frame.destroy()
+                self.cell_frames , self.table_frame =  build_table
+
+
             
         return
 
-    def reject_selected(self, cell_frames):
+    def reject_selected(self, cell_frames, table_frame):
         for f in cell_frames:
             if f[0].get() ==1:
                 api.reject_official(f[1])
+                table_frame.grid_forget()
+                table_frame.destroy()
+                self.cell_frames , self.table_frame =  build_table
             
         return
 
