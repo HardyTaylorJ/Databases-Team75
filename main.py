@@ -669,14 +669,14 @@ class PDPPage(PageTemplate):
     def accept_selected(self, cell_frames):
         for f in cell_frames:
             if f[0].get() ==1:
-                api.accept_official(f[1])
+                api.accept_dp(f[1])
             
         return
 
     def reject_selected(self, cell_frames):
         for f in cell_frames:
             if f[0].get() ==1:
-                api.reject_official(f[1])
+                api.reject_dp(f[1])
             
         return
 

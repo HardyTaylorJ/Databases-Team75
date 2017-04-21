@@ -77,6 +77,12 @@ def accept_official(username):
 def reject_official(username):
 	return
 
+def accept_dp(datetime):
+	return
+
+def reject_dp(datetime):
+	return
+
 def add_datapoint(location, timedate, data_type, data_value):
 	"""
 	adds a datapoint to the database and returns an error code
