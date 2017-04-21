@@ -23,7 +23,7 @@ class TKMain (tk.Tk):
         self.frames = {}
 
         # All frames (pages) must be included in this list
-        for F in (LoginPage, RegisterPage, SciPortalPage, AddDPPage, AddPOIPage, OffPortalPage, AdminPortalPage, ViewPOIPage, POIReportPage):
+        for F in (LoginPage, RegisterPage, SciPortalPage, AddDPPage, AddPOIPage, OffPortalPage, AdminPortalPage, ViewPOIPage, POIReportPage, PDPPage, POPage):
 
             frame = F(container, self)
             self.frames[F] = frame
@@ -624,16 +624,203 @@ class AdminPortalPage(PageTemplate):
 
 
     def pdp(self, controller):
-        controller.show_frame(LoginPage)
+        controller.show_frame(PDPPage)
 
     def poffacc(self, controller):
-        controller.show_frame(LoginPage)
+        controller.show_frame(POPage)
 
     def logout(self, controller):
         api.logout()
         controller.show_frame(LoginPage)
 
+class PDPPage(PageTemplate):
+    def __init__(self, parent, controller):
+        PageTemplate.__init__(self,parent)
+        main_label = tk.Label(self, text="Pending Data Points", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10)
 
+        # table goes here
+                ##table stuff
+        table_frame = tk.Frame(self)
+        table_frame.grid(row=2,column=0, columnspan=2, padx=5,pady=5)
+        numrows, numcols = 0, 6
+
+        titles = ["Select", "Location", "Datatype", "Data Value", "Time&Date of data reading"]
+        cell_frames = []
+        # cell_frames.append(self.add_titles(table_frame, 0, titles, "darkgray")) ##a9a9a9
+        self.add_titles(table_frame, 0, titles, "darkgray") ##a9a9a9
+        pending_data_points = api.get_pending_dp()
+
+        for i in range(0,len(pending_data_points)):
+            cell_frames.append(self.add_row(table_frame, i+1, pending_data_points[i], "white"))
+
+
+        filters = []
+        # apply_button = tk.Button(self, text="Show Report", command=lambda :self.apply_filter(controller, table, filters))
+        # apply_button.grid(row=1, column=0, padx = 20, pady = 10, sticky="E")
+
+        back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
+        back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
+
+    def add_row(self, table, r, row, bg_color):
+        # row
+        # officials_frame = tk.Frame(self, bd=1, relief=SUNKEN)
+        # r = 0
+        flag_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        flag_frame.grid(row=r, column=0, sticky=N+S+E+W)
+        flag_var = IntVar()
+        flag_check = Checkbutton(flag_frame, bg = bg_color, variable=flag_var)
+        flag_check.grid(row=0, column=0, pady = 5, padx = 5, sticky=N+S+E+W)
+
+        locn_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        locn_frame.grid(row=r, column=1, sticky=N+S+E+W)
+        locn_label = tk.Label(locn_frame, bg = bg_color, text=row[0])
+        locn_label.pack(side="top", fill="both", expand = True)
+
+        dtype_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        dtype_frame.grid(row=r, column=2, sticky=N+S+E+W)
+        dtype_label = tk.Label(dtype_frame, bg = bg_color, text=row[1])
+        dtype_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        dval_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        dval_frame.grid(row=r, column=3, sticky=N+S+E+W)
+        dval_label = tk.Label(dval_frame, bg = bg_color, text=row[2])
+        dval_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        td_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        td_frame.grid(row=r, column=4, sticky=N+S+E+W)
+        td_label = tk.Label(td_frame, bg = bg_color, text=row[3])
+        td_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        return (flag_var, locn_label, dtype_label, dval_label, td_label)
+
+
+        # return row_ref
+    def add_titles(self, table, r, row, bg_color):
+        # row
+        # officials_frame = tk.Frame(self, bd=1, relief=SUNKEN)
+        r = 0
+        flag_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        flag_frame.grid(row=r, column=0)
+        flag_label = tk.Label(flag_frame, bg = bg_color, text=row[0])
+        flag_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        locn_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        locn_frame.grid(row=r, column=1)
+        locn_label = tk.Label(locn_frame, bg = bg_color, text=row[1])
+        locn_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        dtype_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        dtype_frame.grid(row=r, column=2)
+        dtype_label = tk.Label(dtype_frame, bg = bg_color, text=row[2])
+        dtype_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        dval_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        dval_frame.grid(row=r, column=3)
+        dval_label = tk.Label(dval_frame, bg = bg_color, text=row[3])
+        dval_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        td_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        td_frame.grid(row=r, column=4)
+        td_label = tk.Label(td_frame, bg = bg_color, text=row[4])
+        td_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+
+    def back(self, controller):
+        controller.show_frame(OffPortalPage)
+class POPage(PageTemplate):
+    def __init__(self, parent, controller):
+        PageTemplate.__init__(self,parent)
+        main_label = tk.Label(self, text="Pending City Officials", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10)
+
+        # table goes here
+                ##table stuff
+        table_frame = tk.Frame(self)
+        table_frame.grid(row=2,column=0, columnspan=2, padx=5,pady=5)
+        numrows, numcols = 0, 6
+
+        titles = ["Select", "Username", "Email", "City", "State", "Title"]
+        cell_frames = []
+        # cell_frames.append(self.add_titles(table_frame, 0, titles, "darkgray")) ##a9a9a9
+        self.add_titles(table_frame, 0, titles, "darkgray") ##a9a9a9
+        pending_data_points = api.get_pending_dp()
+
+        for i in range(0,len(pending_data_points)):
+            cell_frames.append(self.add_row(table_frame, i+1, pending_data_points[i], "white"))
+
+
+        filters = []
+        # apply_button = tk.Button(self, text="Show Report", command=lambda :self.apply_filter(controller, table, filters))
+        # apply_button.grid(row=1, column=0, padx = 20, pady = 10, sticky="E")
+
+        back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
+        back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
+
+    def add_row(self, table, r, row, bg_color):
+        # row
+        # officials_frame = tk.Frame(self, bd=1, relief=SUNKEN)
+        # r = 0
+        flag_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        flag_frame.grid(row=r, column=0, sticky=N+S+E+W)
+        flag_var = IntVar()
+        flag_check = Checkbutton(flag_frame, bg = bg_color, variable=flag_var)
+        flag_check.grid(row=0, column=0, pady = 5, padx = 5, sticky=N+S+E+W)
+
+        locn_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        locn_frame.grid(row=r, column=1, sticky=N+S+E+W)
+        locn_label = tk.Label(locn_frame, bg = bg_color, text=row[0])
+        locn_label.pack(side="top", fill="both", expand = True)
+
+        dtype_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        dtype_frame.grid(row=r, column=2, sticky=N+S+E+W)
+        dtype_label = tk.Label(dtype_frame, bg = bg_color, text=row[1])
+        dtype_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        dval_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        dval_frame.grid(row=r, column=3, sticky=N+S+E+W)
+        dval_label = tk.Label(dval_frame, bg = bg_color, text=row[2])
+        dval_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        td_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        td_frame.grid(row=r, column=4, sticky=N+S+E+W)
+        td_label = tk.Label(td_frame, bg = bg_color, text=row[3])
+        td_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        return (flag_var, locn_label, dtype_label, dval_label, td_label)
+
+
+        # return row_ref
+    def add_titles(self, table, r, row, bg_color):
+        # row
+        # officials_frame = tk.Frame(self, bd=1, relief=SUNKEN)
+        r = 0
+        flag_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        flag_frame.grid(row=r, column=0)
+        flag_label = tk.Label(flag_frame, bg = bg_color, text=row[0])
+        flag_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        locn_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        locn_frame.grid(row=r, column=1)
+        locn_label = tk.Label(locn_frame, bg = bg_color, text=row[1])
+        locn_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        dtype_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        dtype_frame.grid(row=r, column=2)
+        dtype_label = tk.Label(dtype_frame, bg = bg_color, text=row[2])
+        dtype_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        dval_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        dval_frame.grid(row=r, column=3)
+        dval_label = tk.Label(dval_frame, bg = bg_color, text=row[3])
+        dval_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        td_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        td_frame.grid(row=r, column=4)
+        td_label = tk.Label(td_frame, bg = bg_color, text=row[4])
+        td_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+
+    def back(self, controller):
+        controller.show_frame(OffPortalPage)
 
 
 

@@ -165,3 +165,6 @@ def get_days(month):
 
 def get_poi_report():
 	return [ [1,2,3,4,5,6,7,8,9,10,11,12], reversed([1,2,3,4,5,6,7,8,9,10,11,12]) ]
+
+def get_pending_dp():
+	return [list(range(1, 7)), list(reversed(range(1, 7)))]
