@@ -5,6 +5,12 @@ import tktable
 # from Tkinter import ttk
 LARGE_FONT=("Verdana", 12)
 
+## TODO
+# Register box
+# pending data points
+# pending city officials
+# fix datetime
+
 class TKMain (tk.Tk):
     def __init__(self,*args,**kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -126,10 +132,17 @@ class RegisterPage(PageTemplate):
         #TODO: add section that depends on user type
 
 
-        sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller))
+        sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller, uname_entry.get(),  email_entry.get(),  _entry.get()))
         sub_button.grid(row=7, column=0, padx = 20, pady = 10)
 
-    def submit(self, controller): #FIXME: probably need to pass an array with values to register with
+        back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
+        back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
+
+    def submit(self, controller, username, email, pwd, type_args): #FIXME: probably need to pass an array with values to register with
+        api.add_user(username,email, pwd, user_type, type_args) #FIXME: error handling
+        controller.show_frame(LoginPage)
+
+    def back(self, controller): #FIXME: probably need to pass an array with values to filter with
         controller.show_frame(LoginPage)
 
 class SciPortalPage(PageTemplate):
@@ -140,11 +153,19 @@ class SciPortalPage(PageTemplate):
         add_dp_button = tk.Button(self, text="Add Data Point", command=lambda :self.add_dp(controller)).grid(row=1, column=0, padx = 20, pady = 10)
         add_poi_button = tk.Button(self, text="Add POI", command=lambda :self.add_poi(controller)).grid(row=2, column=0, padx = 20, pady = 10)
 
+        logout_button = tk.Button(self, text="Logout", command=lambda :self.logout(controller)).grid(row=3, column=0, padx = 20, pady = 10, sticky="W")
+
+
     def add_dp(self, controller):
         controller.show_frame(AddDPPage)
 
     def add_poi(self, controller):
         controller.show_frame(AddPOIPage)
+
+    def logout(self, controller):
+        api.logout()
+        controller.show_frame(LoginPage)
+
 
 
 class AddDPPage(PageTemplate):
@@ -182,7 +203,13 @@ class AddDPPage(PageTemplate):
         sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller))
         sub_button.grid(row=7, column=0, padx = 20, pady = 10)
 
+        back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
+        back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
+
     def submit(self, controller): #FIXME: probably need to pass an array with values to register with
+        controller.show_frame(SciPortalPage)
+
+    def back(self, controller): #FIXME: probably need to pass an array with values to filter with
         controller.show_frame(SciPortalPage)
 
     def get_loc_options(self): #FIXME: get these from database
@@ -224,7 +251,13 @@ class AddPOIPage(PageTemplate):
         sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller))
         sub_button.grid(row=7, column=0, padx = 20, pady = 10)
 
+        back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
+        back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
+
     def submit(self, controller): #FIXME: probably need to pass an array with values to register with
+        controller.show_frame(SciPortalPage)
+
+    def back(self, controller): #FIXME: probably need to pass an array with values to filter with
         controller.show_frame(SciPortalPage)
 
     def get_state_options(self): 
@@ -243,11 +276,17 @@ class OffPortalPage(PageTemplate):
         fs_poi_button = tk.Button(self, text="Filter/Search POI", command=lambda :self.fs_poi(controller)).grid(row=1, column=0, padx = 20, pady = 10)
         poi_report_button = tk.Button(self, text="POI Report", command=lambda :self.poi_report(controller)).grid(row=2, column=0, padx = 20, pady = 10)
 
+        logout_button = tk.Button(self, text="Logout", command=lambda :self.logout(controller)).grid(row=3, column=0, padx = 20, pady = 10, sticky="W")
+
     def fs_poi(self, controller):
         controller.show_frame(ViewPOIPage)
 
     def poi_report(self, controller):
         controller.show_frame(POIReportPage)
+
+    def logout(self, controller):
+        api.logout()
+        controller.show_frame(LoginPage)
 
 class POIReportPage(PageTemplate):
     def __init__(self, parent, controller):
@@ -487,6 +526,9 @@ class ViewPOIPage(PageTemplate):
         reset_button = tk.Button(self, text="Reset Filter", command=lambda :self.reset_filter(controller))
         reset_button.grid(row=9, column=0, padx = 20, pady = 10, sticky="W")
 
+        back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
+        back_button.grid(row=11, column=0, padx = 20, pady = 10, sticky="W")
+
     def apply_filter(self, controller, table, filters): #FIXME: probably need to pass an array with values to filter with
         titles = ("Location Name", "City", "State", "Zip Code", "Flagged", "Date Flagged")
         r = table.index('end').split(',')[0] #get row number <str>
@@ -508,6 +550,9 @@ class ViewPOIPage(PageTemplate):
 
 
     def reset_filter(self, controller): #FIXME: probably need to pass an array with values to filter with
+        controller.show_frame(OffPortalPage)
+
+    def back(self, controller): #FIXME: probably need to pass an array with values to filter with
         controller.show_frame(OffPortalPage)
 
     def back(self, controller): #FIXME: probably need to pass an array with values to filter with
@@ -542,10 +587,17 @@ class AdminPortalPage(PageTemplate):
         pdp_button = tk.Button(self, text="Pending Data Points", command=lambda :self.pdp(controller)).grid(row=1, column=0, padx = 20, pady = 10)
         poffacc_button = tk.Button(self, text="Pending City Official Accounts", command=lambda :self.poffacc(controller)).grid(row=2, column=0, padx = 20, pady = 10)
 
+        logout_button = tk.Button(self, text="Logout", command=lambda :self.logout(controller)).grid(row=3, column=0, padx = 20, pady = 10, sticky="W")
+
+
     def pdp(self, controller):
         controller.show_frame(LoginPage)
 
     def poffacc(self, controller):
+        controller.show_frame(LoginPage)
+
+    def logout(self, controller):
+        api.logout()
         controller.show_frame(LoginPage)
 
 

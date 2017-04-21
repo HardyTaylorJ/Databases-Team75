@@ -6,6 +6,12 @@ import os
 from datetime import date
 from datetime import datetime
 import datetime
+conn = sql.connect(host = "academic-mysql.cc.gatech.edu",
+                        passwd = "XzXVaWnA",
+                        user = "cs4400_75",
+                        db = "cs4400_75") 
+cursor = conn.cursor()
+active_user = None
 
 def login(username, password):
 	""" 
@@ -18,10 +24,10 @@ def login(username, password):
 	"Invalid"
 	"""
 	# try:
-	conn = sql.connect(host = "academic-mysql.cc.gatech.edu",
-                        passwd = "XzXVaWnA",
-                        user = "cs4400_75",
-                        db = "cs4400_75") 
+	# conn = sql.connect(host = "academic-mysql.cc.gatech.edu",
+ #                        passwd = "XzXVaWnA",
+ #                        user = "cs4400_75",
+ #                        db = "cs4400_75") 
 	cursor =  conn.cursor()
 	statement = "SELECT * FROM User WHERE USERNAME=%s and PASSWORD=%s"
 	cursor.execute(statement, (username, password))
@@ -30,12 +36,17 @@ def login(username, password):
 	if user == None:
 		return "Invalid"
 	print user[3]
+	active_user = username
 	return user[3]
 	# except:
 	# 	print "Error","Connection Error"
 	# return "Official" #Fixme: change this
 
-def add_user(username, password, email, user_type, type_args):
+def logout(): #FIXME is this needed?
+	active_user = None
+	return
+
+def add_user(username, pwd, confpwd, email, user_type, type_args):
 	""" 
 	registers user in the database
 
@@ -44,6 +55,20 @@ def add_user(username, password, email, user_type, type_args):
 	1: duplicate username
 	2: duplicate email
 	"""
+
+	if confpwd == pwd:
+		users = cursor.execute("SELECT * FROM USER WHERE Username = %s",(user)).fetchone()
+		if len(users) == 0:
+			cursor.execute("INSERT INTO User VALUES (%s, %s, %s, %s)", (username, email, pwd, user_type))
+			if user_type == "City Official":
+				cursor.execute("INSERT INTO City_Official VALUES (%s, %s, %s, %s, %s)",(username, NULL, type_args[2], type_args[0], type_args[1]))
+		else:
+			print "User already exists"
+	else:
+		print "passwords dont match"
+		#window + print("passwords do not match")
+	
+
 	return 0
 
 def add_datapoint(location, timedate, data_type, data_value):
