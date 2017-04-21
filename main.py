@@ -6,7 +6,6 @@ import tktable
 LARGE_FONT=("Verdana", 12)
 
 ## TODO
-# Register box
 # pending data points
 # pending city officials
 # fix datetime
@@ -121,29 +120,63 @@ class RegisterPage(PageTemplate):
         cpwd_entry.grid(row=4, column=1, pady = 5, padx= 20)
 
         #variable in the dropdown
-        var = StringVar(self)
-        var.set("City Officials")
+        type_var = StringVar(self)
+        type_var.set("City Officials")
         #set trace on var
         # observer_name = trace_variable("w", callback)
 
         #dropdown box
-        type_option = OptionMenu(self, var, "City Officials", "City Scientists").grid(row=5, column=1, padx = 20, pady = 10, sticky="W")
+        type_option = OptionMenu(self, type_var, "City Officials", "City Scientists").grid(row=5, column=1, padx = 20, pady = 10, sticky = "W")
 
         #TODO: add section that depends on user type
 
 
-        sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller, uname_entry.get(),  email_entry.get(),  _entry.get()))
+        officials_frame = tk.Frame(self, bd=1, relief=SUNKEN)
+        officials_frame.grid(row = 6, columnspan=2, padx = 20)
+
+        officials_title = tk.Label(officials_frame, text="Fill out this form if you chose city official").grid(row=0, column=0, pady = 5, columnspan=2)
+        city_label = tk.Label(officials_frame, text="City").grid(row=1, column=0, pady = 5)
+        state_label = tk.Label(officials_frame, text="State").grid(row=2, column=0, pady = 5)
+        title_label = tk.Label(officials_frame, text="Title").grid(row=3, column=0, pady = 5)
+
+        ## city option menu
+        city_options = self.get_city_options()
+        city_var = StringVar(self)
+        city_var.set(city_options[0])
+
+        city_dropdown = apply(OptionMenu, (officials_frame, city_var) + tuple(city_options))
+        city_dropdown.grid(row=1, column=1, padx = 20, pady = 5, sticky="W")
+
+        ## state option menu
+        state_options = self.get_state_options()
+        state_var = StringVar(self)
+        state_var.set(state_options[0])
+        state_dropdown = apply(OptionMenu, (officials_frame, state_var) + tuple(state_options))
+        state_dropdown.grid(row=2, column=1, padx = 20, pady = 5, sticky="W")
+
+
+        title_entry = tk.Entry(officials_frame)
+        title_entry.grid(row=3, column=1, pady = 5, padx=20)
+
+        city_official_info = (city_var.get(), state_var.get(), title_entry.get())
+        sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller, uname_entry.get(),  email_entry.get(),  pwd_entry.get(), cpwd_entry.get(), type_var.get(), city_official_info))
         sub_button.grid(row=7, column=0, padx = 20, pady = 10)
 
         back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
         back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
 
-    def submit(self, controller, username, email, pwd, type_args): #FIXME: probably need to pass an array with values to register with
-        api.add_user(username,email, pwd, user_type, type_args) #FIXME: error handling
+    def submit(self, controller, username, email, pwd, cpwd, user_type, type_args): #FIXME: probably need to pass an array with values to register with
+        api.add_user(username, email, pwd, cpwd, user_type, type_args) #FIXME: error handling
         controller.show_frame(LoginPage)
 
     def back(self, controller): #FIXME: probably need to pass an array with values to filter with
         controller.show_frame(LoginPage)
+
+    def get_state_options(self): 
+        return api.get_states()
+
+    def get_city_options(self): #FIXME: pass in state?
+        return api.get_cities()
 
 class SciPortalPage(PageTemplate):
     def __init__(self, parent, controller):
@@ -599,6 +632,8 @@ class AdminPortalPage(PageTemplate):
     def logout(self, controller):
         api.logout()
         controller.show_frame(LoginPage)
+
+
 
 
 
