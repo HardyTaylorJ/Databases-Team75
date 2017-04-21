@@ -71,6 +71,12 @@ def add_user(username, pwd, confpwd, email, user_type, type_args):
 
 	return 0
 
+def accept_official(username):
+	return
+
+def reject_official(username):
+	return
+
 def add_datapoint(location, timedate, data_type, data_value):
 	"""
 	adds a datapoint to the database and returns an error code
@@ -168,3 +174,6 @@ def get_poi_report():
 
 def get_pending_dp():
 	return [list(range(1, 7)), list(reversed(range(1, 7)))]
+
+def get_pending_off():
+	return [list(range(1, 6)), list(reversed(range(1, 6)))]
