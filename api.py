@@ -46,7 +46,7 @@ def logout(): #FIXME is this needed?
 	active_user = None
 	return
 
-def add_user(username, pwd, confpwd, email, user_type, type_args):
+def add_user(username,  email, pwd, confpwd, user_type, type_args):
 	""" 
 	registers user in the database
 
@@ -56,12 +56,17 @@ def add_user(username, pwd, confpwd, email, user_type, type_args):
 	2: duplicate email
 	"""
 
+	print type_args[1:-2]
+	print type_args[1]
+
 	if confpwd == pwd:
-		users = cursor.execute("SELECT * FROM USER WHERE Username = %s",(username)).fetchone()
-		if len(users) == 0:
+		users = cursor.execute("SELECT * FROM User WHERE Username = %s",(username))
+		if users == 0:
 			cursor.execute("INSERT INTO User VALUES (%s, %s, %s, %s)", (username, email, pwd, user_type))
+			conn.commit()
 			if user_type == "City Official":
-				cursor.execute("INSERT INTO City_Official VALUES (%s, %s, %s, %s, %s)",(username, NULL, type_args[2], type_args[0], type_args[1]))
+				cursor.execute("INSERT INTO City_Official VALUES (%s, %s, %s, %s, %s)",(username, None, type_args[2], type_args[0], type_args[1]))
+				conn.commit()
 		else:
 			print "User already exists"
 	else:
@@ -110,7 +115,9 @@ def get_cities(): #fixme: does this need to deend on state
 
 	@return array city_list
 	"""
-	return ["Atlanta", "Macon", "Savanna"]
+	cursor.execute("select Distinct City from City_State")
+	return cursor.fetchall()
+	# return ["Atlanta", "Macon", "Savanna"]
 
 
 def get_states():
@@ -119,7 +126,9 @@ def get_states():
 
 	@return array state_list
 	"""
-	return ["GA", "TN", "NY"]
+	# return ["GA", "TN", "NY"]
+	cursor.execute("select Distinct State from City_State")
+	return cursor.fetchall()
 
 def get_poi_names():
 	"""

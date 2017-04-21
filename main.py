@@ -121,12 +121,12 @@ class RegisterPage(PageTemplate):
 
         #variable in the dropdown
         type_var = StringVar(self)
-        type_var.set("City Officials")
+        type_var.set("City Official")
         #set trace on var
         # observer_name = trace_variable("w", callback)
 
         #dropdown box
-        type_option = OptionMenu(self, type_var, "City Officials", "City Scientists").grid(row=5, column=1, padx = 20, pady = 10, sticky = "W")
+        type_option = OptionMenu(self, type_var, "City Official", "City Scientist").grid(row=5, column=1, padx = 20, pady = 10, sticky = "W")
 
         #TODO: add section that depends on user type
 
