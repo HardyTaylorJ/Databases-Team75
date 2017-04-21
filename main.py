@@ -661,6 +661,25 @@ class PDPPage(PageTemplate):
         back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
         back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
 
+        reject_button = tk.Button(self, text="Reject", command=lambda :self.reject_selected(cell_frames))
+        reject_button.grid(row=9, column=2, padx = 20, pady = 10, columnspan = 2)
+        accept_button = tk.Button(self, text="Acept", command=lambda :self.accept_selected(cell_frames))
+        accept_button.grid(row=9, column=2, padx = 20, pady = 10, columnspan = 2)
+
+    def accept_selected(self, cell_frames):
+        for f in cell_frames:
+            if f[0].get() ==1:
+                api.accept_official(f[1])
+            
+        return
+
+    def reject_selected(self, cell_frames):
+        for f in cell_frames:
+            if f[0].get() ==1:
+                api.reject_official(f[1])
+            
+        return
+
     def add_row(self, table, r, row, bg_color):
         # row
         # officials_frame = tk.Frame(self, bd=1, relief=SUNKEN)
@@ -691,7 +710,7 @@ class PDPPage(PageTemplate):
         td_label = tk.Label(td_frame, bg = bg_color, text=row[3])
         td_label.grid(row=0, column=0, pady = 5, padx = 5)
 
-        return (flag_var, locn_label, dtype_label, dval_label, td_label)
+        return (flag_var, row[3]) #returns flag variable and datetime
 
 
         # return row_ref
@@ -754,7 +773,7 @@ class POPage(PageTemplate):
 
         back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
         back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
-        reject_button = tk.Button(self, text="Reject", command=lambda :self.reject_selected(controller))
+        reject_button = tk.Button(self, text="Reject", command=lambda :self.reject_selected(cell_frames))
         reject_button.grid(row=9, column=2, padx = 20, pady = 10, columnspan = 2)
         accept_button = tk.Button(self, text="Acept", command=lambda :self.accept_selected(cell_frames))
         accept_button.grid(row=9, column=2, padx = 20, pady = 10, columnspan = 2)
