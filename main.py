@@ -336,8 +336,8 @@ class AddPOIPage(PageTemplate):
 
         locn_entry = tk.Entry(self)
         locn_entry.grid(row=1, column=1, pady = 5, padx= 20)
-        dataval_entry = tk.Entry(self)
-        dataval_entry.grid(row=4, column=1, pady = 5, padx= 20)
+        zip_entry = tk.Entry(self)
+        zip_entry.grid(row=4, column=1, pady = 5, padx= 20)
 
         ## city option menu
         city_options = self.get_city_options()
@@ -345,32 +345,33 @@ class AddPOIPage(PageTemplate):
         city_var.set(city_options[0])
 
         city_dropdown = apply(OptionMenu, (self, city_var) + tuple(city_options))
-        city_dropdown.grid(row=3, column=1, padx = 20, pady = 10, sticky="W")
+        city_dropdown.grid(row=2, column=1, padx = 20, pady = 10, sticky="W")
 
         ## state option menu
         state_options = self.get_state_options()
         state_var = StringVar(self)
         state_var.set(state_options[0])
         state_dropdown = apply(OptionMenu, (self, state_var) + tuple(state_options))
-        state_dropdown.grid(row=2, column=1, padx = 20, pady = 10, sticky="W")
+        state_dropdown.grid(row=3, column=1, padx = 20, pady = 10, sticky="W")
 
-        sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller))
+        sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller, locn_entry.get(), city_var.get(), state_var.get(), zip_entry.get()))
         sub_button.grid(row=7, column=0, padx = 20, pady = 10)
 
         back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
         back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
 
-    def submit(self, controller): #FIXME: probably need to pass an array with values to register with
+    def submit(self, controller, loc_name, city, state, zip_code): #FIXME: probably need to pass an array with values to register with
+        api.add_poi(loc_name, city, state, zip_code)
         controller.show_frame(SciPortalPage)
 
     def back(self, controller): #FIXME: probably need to pass an array with values to filter with
         controller.show_frame(SciPortalPage)
 
     def get_state_options(self): 
-        return [ "atl","nyc","san fran"]
+        return api.get_states()
 
     def get_city_options(self): #FIXME: pass in state?
-        return [ "GA","TN", "CA", "NY"]
+        return api.get_cities()
 
 
 

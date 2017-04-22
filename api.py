@@ -112,7 +112,7 @@ def add_datapoint(loc_name, time_date, data_type, data_val):
 	"""
 	return 0
 
-def add_poi(name, city, state, zip):
+def add_poi(loc_name, city, state, zip_code):
 	"""
 	adds a POI to the database
 
