@@ -14,15 +14,12 @@ cursor = conn.cursor()
 active_user = None
 
 ## todo: 
-# add datapoint
-# add poi
-# get pending data points
-# get pending city officials
-# accept pending city officials
-# reject pending city officials
-# accept pending data points
-# reject pending data points
-# flag
+# sorting for pending data points
+# fix mixed up order for city and state in view pois
+# change tktable to grid in view POIs or add reset
+# finish poi detail
+# put title bar on poi detail
+# email address constraints with regex in google doc
 
 
 def login(username, password):
@@ -90,18 +87,38 @@ def add_user(username,  email, pwd, confpwd, user_type, type_args):
 	return 0
 
 def accept_official(username):
+	print 'entered accept official'
+	cursor.execute("UPDATE City_Official SET Approved = TRUE WHERE Username = %s", username)
+	conn.commit()
+	print username
+
 	return
 
 def reject_official(username):
+	print 'entered reject official'
+
+	cursor.execute("UPDATE City_Official SET Approved = FALSE WHERE Username = %s", username)
+	conn.commit()
+	print username
 	return
 
-def accept_dp(datetime):
+def accept_dp(poi_name,datetime):
+	print 'entered accept datapoint'
+
+	print poi_name
+	print datetime
+	cursor.execute("UPDATE Data_Point SET Accepted = TRUE WHERE Location_name = %s AND Date_Time = %s",(poi_name, datetime) )
+	conn.commit()
 	return
 
-def reject_dp(datetime):
+def reject_dp(poi_name, datetime):
+	print 'entered reject datapoint'
+
+	cursor.execute("UPDATE Data_Point SET Accepted = FALSE WHERE Location_name = %s AND Date_Time = %s",(poi_name, datetime) )
+	conn.commit()
 	return
 
-def add_datapoint(loc_name, time_date, data_type, data_val):
+def add_datapoint(vpoilocation, vdatetime, vdatatype, vdatavalue):
 	"""
 	adds a datapoint to the database and returns an error code
 
@@ -110,9 +127,32 @@ def add_datapoint(loc_name, time_date, data_type, data_val):
 	@return int error_code 
 	0: success
 	"""
+
+	# if time>dt.datetime.now():
+	# 	print 'time not valid'
+	# 	return
+	# 	#error message + print("the time given is not valid, (in the future) (i dunno what to say this correctly)")
+	print vdatetime
+	execute_string = "select * from Data_Point where Location_Name='{}'".format(vpoilocation) + ' and Date_Time="{}"'.format(vdatetime) 
+	# cursor.execute("select * from Data_Point where Location_Name=%s and Date_Time=%s",(vpoilocation,vdatetime))
+	cursor.execute(execute_string)
+	checkDatapoi= cursor.fetchall()
+	print checkDatapoi
+	if len(checkDatapoi)==0:
+		print vpoilocation
+		print vdatetime
+		print vdatavalue
+		print None
+		print vdatatype
+		cursor.execute("INSERT INTO Data_Point Values(%s, %s, %s, %s, %s)", (vpoilocation, vdatetime, vdatavalue, None, vdatatype))
+		conn.commit()
+	else:
+		print 'datapoint  with the same location name and date reading already exists'
+	#error message + print("data point with the same location name and date reading already exists")
+
 	return 0
 
-def add_poi(loc_name, city, state, zip_code):
+def add_poi(vpoilocation, vcity, vstate, vzip):
 	"""
 	adds a POI to the database
 
@@ -120,6 +160,28 @@ def add_poi(loc_name, city, state, zip_code):
 	0: success
 
 	"""
+	vdateflagged = None
+	vzip = int(vzip)
+	print vzip
+	# print len(vzip)
+	print vstate.strip()
+	if vpoilocation=="":
+		print 'no location'
+		return
+	#error message + print("all of the fields must be filled")
+	if vzip>100000:
+		print 'incorrect zip code format'
+		return
+		#error message + print("please input a correct format of zipcode")
+
+	cursor.execute("SELECT * FROM POI WHERE (City=%s and State=%s) or Location_Name = %s",(vcity,vstate,vpoilocation))
+	checkDatapoint = cursor.fetchone() 
+	if checkDatapoint:
+		cursor.execute("INSERT INTO POI Values(%s, %s, %s, %s, %s, %s)", (vpoilocation, 0, vdateflagged, vzip, vcity, vstate))
+		conn.commit()
+	else:
+		#error message + print("Poi with the same location name of combination of city and state already exists")
+		print "POI with same location name of combination of city and state already exists"
 	return 0
 
 def get_cities(): #fixme: does this need to deend on state
@@ -160,9 +222,13 @@ def get_poi_names():
 	return [x[0] for x in pois]
 
 def get_pending_datapoints():
-	return
+	Mainview = "SELECT Location_Name, Data_Type, Data_Value, Date_Time FROM Data_Point WHERE Accepted IS NULL"
+
+	cursor.execute(mainview)
+	return cursor.fetchall()
 
 def get_pending_officials():
+
 	return
 
 def get_poi(vpoi,vcity,vstate,vzip,vflagged,sdate,edate):
@@ -264,10 +330,17 @@ def get_poi_report(sort_option, order_option):
 	# return [ ['01','02','03','04','05','06','07','08','09','10','11','12'], reversed([1,2,3,4,5,6,7,8,9,10,11,12]) ]
 
 def get_pending_dp():
-	return [list(range(1, 7)), list(reversed(range(1, 7)))]
+	mainview = "SELECT Location_Name, Data_Type, Data_Value, Date_Time FROM Data_Point WHERE Accepted IS NULL"
+
+	cursor.execute(mainview)
+	return cursor.fetchall()
+	# return [list(range(1, 7)), list(reversed(range(1, 7)))]
 
 def get_pending_off():
-	return [list(range(1, 6)), list(reversed(range(1, 6)))]
+	cursor.execute("SELECT User.Username, Email, City, State, Title FROM City_Official, User WHERE User_type = 'City Official' AND User.Username = City_Official.Username  AND Approved IS NULL")
+	return cursor.fetchall()
+
+	# return [list(range(1, 6)), list(reversed(range(1, 6)))]
 
 def get_poi_detail(data_type, data_min, data_max, timedate_start, timedate_end):
 	"""
@@ -281,3 +354,54 @@ def flag_poi(poi_name):
 
 def unflag_poi(poi_name):
 	return
+
+def get_datatypes():
+	return ["Mold", "Air Quality Reading"]
+
+def official_r(f):
+	print 'entered reject official for ' +f[1] + "with an f[0] of "+ str(f[0].get())
+
+	# cursor.execute("UPDATE City_Official SET Approved = FALSE WHERE Username = %s", username)
+	# conn.commit()
+	print f[1]
+	if f[0].get():
+		cursor.execute("UPDATE City_Official SET Approved = FALSE WHERE Username = %s", f[1])
+		conn.commit()
+		print "rejected "+f[1]
+
+def official_a(f):
+	print 'entered reject official for ' +f[1] + "with an f[0] of "+ str(f[0].get())
+
+	# cursor.execute("UPDATE City_Official SET Approved = FALSE WHERE Username = %s", username)
+	# conn.commit()
+	print f[1]
+	if f[0].get():
+		cursor.execute("UPDATE City_Official SET Approved = TRUE WHERE Username = %s", f[1])
+		conn.commit()
+		print "rejected "+f[1]
+
+
+def datapoint_r(f):
+	print 'entered data point for ' +f[1] + " at " + str(f[2]) +"with an f[0] of "+ str(f[0].get())
+
+	# cursor.execute("UPDATE City_Official SET Approved = FALSE WHERE Username = %s", username)
+	# conn.commit()
+	print f[1]
+	if f[0].get():
+		cursor.execute("UPDATE Data_Point SET Accepted = FALSE WHERE Location_name = %s AND Date_Time = %s",(f[1], str(f[2])) )
+		conn.commit()
+		print "rejected "+f[1]
+
+def datapoint_a(f):
+	print 'entered data point for ' +f[1] + " at " + str(f[2]) +"with an f[0] of "+ str(f[0].get())
+
+	# cursor.execute("UPDATE City_Official SET Approved = FALSE WHERE Username = %s", username)
+	# conn.commit()
+	print f[1]
+	if f[0].get():
+		cursor.execute("UPDATE Data_Point SET Accepted = TRUE WHERE Location_name = %s AND Date_Time = %s",(f[1], str(f[2]) ))
+		conn.commit()
+		print "rejected "+f[1]
+
+
+

@@ -122,7 +122,7 @@ class RegisterPage(PageTemplate):
 
         #variable in the dropdown
         type_var = StringVar(self)
-        type_var.set("City Official")
+        type_var.set("City Official") #FIXME: get from db?
         #set trace on var
         # observer_name = trace_variable("w", callback)
 
@@ -289,7 +289,7 @@ class AddDPPage(PageTemplate):
         datatype_dropdown = apply(OptionMenu, (self, datatype_var) + tuple(datatype_options))
         datatype_dropdown.grid(row=4, column=1, padx = 20, pady = 10, sticky="W")
 
-        sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller, locname_var, datetime.datetime(int(year_var.get()), int(month_var.get()), int(day_var.get()), hour=int(hour_var.get()), minute=int(minute_var.get())), datatype_var.get(), dataval_entry.get()))
+        sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller, locname_var.get(), datetime.datetime(int(year_var.get()), int(month_var.get()), int(day_var.get()), hour=int(hour_var.get()), minute=int(minute_var.get())), datatype_var.get(), dataval_entry.get()))
         sub_button.grid(row=8, column=0, padx = 20, pady = 10)
 
         back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
@@ -322,7 +322,7 @@ class AddDPPage(PageTemplate):
         return api.get_poi_names()
 
     def get_datatype_options(self): #FIXME: get these from database
-        return [ "Mold","Air Quality reading"]
+        return api.get_datatypes()
 
 class AddPOIPage(PageTemplate):
     def __init__(self, parent, controller):
@@ -385,8 +385,19 @@ class OffPortalPage(PageTemplate):
 
         logout_button = tk.Button(self, text="Logout", command=lambda :self.logout(controller)).grid(row=3, column=0, padx = 20, pady = 10, sticky="W")
 
+        sdetail_button = tk.Button(self, text="test poidetail", command=lambda :self.detail_window(parent, controller)).grid(row=4, column=0, padx = 20, pady = 10, sticky="W")
+
+
     def fs_poi(self, controller):
         controller.show_frame(ViewPOIPage)
+
+    def detail_window(self, parent, controller):
+        window = tk.Toplevel(self)
+        frame = POIDetail(window, self, "", "")
+        # window.frames[F] = frame
+        frame.grid(row=0, column = 0, sticky=N+E+S+W)
+        # self.show_frame(frame)
+
 
     def poi_report(self, controller):
         controller.show_frame(POIReportPage)
@@ -394,6 +405,232 @@ class OffPortalPage(PageTemplate):
     def logout(self, controller):
         api.logout()
         controller.show_frame(LoginPage)
+
+# class POIDetail()
+class POIDetail(PageTemplate):
+    def __init__(self, parent, controller, poi_name, poi_timedate   ):
+        PageTemplate.__init__(self,parent)
+        main_label = tk.Label(self, text="POI Details", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10, padx=20)
+
+        type_label = tk.Label(self, text="Data Type").grid(row=1, column=0, pady = 5, sticky = 'E')
+        dval_label = tk.Label(self, text="Data Value").grid(row=2, column=0, pady = 5, sticky = 'E')
+
+
+         ## datatype option menu
+        datatype_options = self.get_datatype_options()
+        datatype_var = StringVar(self)
+        datatype_var.set(datatype_options[0])
+        datatype_dropdown = apply(OptionMenu, (self, datatype_var) + tuple(datatype_options))
+        datatype_dropdown.grid(row=1, column=1, padx = 20, pady = 10, sticky="W")
+
+        ## data value range
+        dval_frame = tk.Frame(self)
+        dval_frame.grid(row=2, column=1, pady = 5, sticky="W", padx = 20)
+
+        min_dval_entry = tk.Entry(dval_frame)
+        min_dval_entry.grid(row=0, column=0, pady = 5, padx= 5, sticky="W")
+
+        dval_to_label = tk.Label(dval_frame, text="to").grid(row=0, column=1, pady = 5)
+
+        max_dval_entry = tk.Entry(dval_frame)
+        max_dval_entry.grid(row=0, column=2, pady = 5, padx= 5, sticky="W") 
+
+
+
+
+        ## date chooser stuff
+        dateflag_label = tk.Label(self, text="Date Flagged").grid(row=3, column=0, pady = 5, sticky="E")
+        date_frame = tk.Frame(self)
+        date_frame.grid(row=3, column=1, pady = 5, sticky="W", padx = 20)
+
+        #month
+        month_options = self.get_month_options()
+        month_var = StringVar(self)
+        month_var.set(month_options[0])
+
+        month_dropdown = apply(OptionMenu, (date_frame, month_var) + tuple(month_options))
+        month_dropdown.grid(row=0, column=0, padx = 1, sticky="W")
+        slash_label1 = tk.Label(date_frame, text="/").grid(row=0, column=1, sticky = 'E')
+
+        #day
+        day_options = self.get_day_options()
+        day_var = StringVar(self)
+        day_var.set(day_options[0])
+
+        day_dropdown = apply(OptionMenu, (date_frame, day_var) + tuple(day_options))
+        day_dropdown.grid(row=0, column=2, padx = 1, sticky="W")
+        slash_label2 = tk.Label(date_frame, text="/").grid(row=0, column=3,sticky = 'E')
+
+        #year
+        year_options = self.get_year_options()
+        year_var = StringVar(self)
+        year_var.set(year_options[0])
+
+        year_dropdown = apply(OptionMenu, (date_frame, year_var) + tuple(year_options))
+        year_dropdown.grid(row=0, column=4, padx = 1, sticky="W")
+
+
+        ## time
+        time_frame = tk.Frame(self)
+        time_frame.grid(row=4, column=1, pady = 5, sticky="W", padx = 20)
+        #hour
+        hour_options = self.get_hour_options()
+        hour_var = StringVar(self)
+        hour_var.set(month_options[0])
+
+        hour_dropdown = apply(OptionMenu, (time_frame, hour_var) + tuple(hour_options))
+        hour_dropdown.grid(row=0, column=0, padx = 1, sticky="W")
+        slash_label1 = tk.Label(time_frame, text=":").grid(row=0, column=1, sticky = 'E')
+                #minute
+        minute_options = self.get_minute_options()
+        minute_var = StringVar(self)
+        minute_var.set(day_options[0])
+
+        minute_dropdown = apply(OptionMenu, (time_frame, minute_var) + tuple(minute_options))
+        minute_dropdown.grid(row=0, column=2, padx = 1, sticky="W")
+
+
+        dateto_label = tk.Label(self, text="to").grid(row=5, column=1, pady = 0)
+
+        ##end date stuff
+        end_date_frame = tk.Frame(self)
+        end_date_frame.grid(row=6, column=1, pady = 5, sticky="W", padx = 20)
+        #month
+        month_options = self.get_month_options()
+        end_month_var = StringVar(self)
+        end_month_var.set(month_options[0])
+
+        end_month_dropdown = apply(OptionMenu, (end_date_frame, end_month_var) + tuple(month_options))
+        end_month_dropdown.grid(row=0, column=0, padx = 1, sticky="W")
+        slash_label1 = tk.Label(end_date_frame, text="/").grid(row=0, column=1, sticky = 'E')
+
+        #day
+        day_options = self.get_day_options()
+        end_day_var = StringVar(self)
+        end_day_var.set(day_options[0])
+
+        end_day_dropdown = apply(OptionMenu, (end_date_frame, end_day_var) + tuple(day_options))
+        end_day_dropdown.grid(row=0, column=2, padx = 1, sticky="W")
+        slash_label2 = tk.Label(end_date_frame, text ="/").grid(row=0, column=3,sticky = 'E')
+
+        #year
+        year_options = self.get_year_options()
+        end_year_var = StringVar(self)
+        end_year_var.set(year_options[0])
+
+        end_year_dropdown = apply(OptionMenu, (end_date_frame, end_year_var) + tuple(year_options))
+        end_year_dropdown.grid(row=0, column=4, padx = 1, sticky="W")
+
+        end_time_frame = tk.Frame(self)
+        end_time_frame.grid(row=7, column=1, pady = 5, sticky="W", padx = 20)
+        #hour
+        hour_options = self.get_hour_options()
+        end_hour_var = StringVar(self)
+        end_hour_var.set(month_options[0])
+
+        end_hour_dropdown = apply(OptionMenu, (end_time_frame, end_hour_var) + tuple(hour_options))
+        end_hour_dropdown.grid(row=0, column=0, padx = 1, sticky="W")
+        slash_label1 = tk.Label(end_time_frame, text=":").grid(row=0, column=1, sticky = 'E')
+
+        #minute
+        minute_options = self.get_minute_options()
+        end_minute_var = StringVar(self)
+        end_minute_var.set(day_options[0])
+
+        end_minute_dropdown = apply(OptionMenu, (end_time_frame, end_minute_var) + tuple(minute_options))
+        end_minute_dropdown.grid(row=0, column=2, padx = 1, sticky="W")
+
+
+
+        # zip_entry = tk.Entry(self)
+        # zip_entry.grid(row=4, column=1, pady = 5, padx= 20, sticky="W")
+
+        # flag_var = IntVar()
+        # flag_check = Checkbutton(self, variable=flag_var)
+        # flag_check.grid(row=5, column=1, pady = 5, sticky="W", padx = 20)
+
+        # ## loc option menu
+        # loc_options = ('None',) + tuple(self.get_loc_options())
+        # loc_var = StringVar(self)
+        # loc_var.set(loc_options[0])
+
+        # loc_dropdown = apply(OptionMenu, (self, loc_var) + tuple(loc_options))
+        # loc_dropdown.grid(row=1, column=1, padx = 20, pady = 10, sticky="W")
+
+
+
+        # ## city option menu
+        # city_options = self.get_city_options()
+        # city_var = StringVar(self)
+        # city_var.set(city_options[0])
+
+        # city_dropdown = apply(OptionMenu, (self, city_var) + tuple(city_options))
+        # city_dropdown.grid(row=3, column=1, padx = 20, pady = 10, sticky="W")
+
+        # ## state option menu
+        # state_options = self.get_state_options()
+        # state_var = StringVar(self)
+        # state_var.set(state_options[0])
+        # state_dropdown = apply(OptionMenu, (self, state_var) + tuple(state_options))
+        # state_dropdown.grid(row=2, column=1, padx = 20, pady = 10, sticky="W")
+
+    def get_hour_options(self):
+        return api.get_hours()
+
+    def get_minute_options(self):
+        return api.get_minutes()
+
+    def get_datatype_options(self):
+        return api.get_datatypes()
+
+
+
+    def apply_filter(self, controller, table, location,city,state,zipc,flag,sdate,edate): #FIXME: probably need to pass an array with values to filter with
+        titles = ("Location Name", "City", "State", "Zip Code", "Flagged", "Date Flagged")
+        r = table.index('end').split(',')[0] #get row number <str>
+        idx = r + ',-1'
+        table.set('row', idx, *titles)
+        table.see(idx)
+        filtered_poi = api.get_poi(location,city,state,zipc,flag,sdate,edate)
+        for r in filtered_poi:
+            self.add_new_data(r, table)
+
+    def add_new_data(self, row, table):
+        #table.config(state='normal')
+        table.insert_rows('end', 1)
+        r = table.index('end').split(',')[0] #get row number <str>
+        idx = r + ',-1'
+        table.set('row', idx, *row)
+        table.see(idx)
+        #table.config(state='disabled')
+
+
+    def reset_filter(self, controller): #FIXME: probably need to pass an array with values to filter with
+        controller.show_frame(OffPortalPage)
+
+    def back(self, controller): #FIXME: probably need to pass an array with values to filter with
+        controller.show_frame(OffPortalPage)
+
+    def back(self, controller): #FIXME: probably need to pass an array with values to filter with
+        controller.show_frame(OffPortalPage)
+
+    def get_loc_options(self):
+        return api.get_poi_names()
+
+    def get_state_options(self): 
+        return api.get_states()
+
+    def get_city_options(self): #FIXME: pass in state?
+        return api.get_cities()
+
+    def get_year_options(self):
+        return api.get_years()
+
+    def get_month_options(self):
+        return api.get_months()
+
+    def get_day_options(self):
+        return api.get_days("1")
 
 class POIReportPage(PageTemplate):
     def __init__(self, parent, controller):
@@ -800,25 +1037,51 @@ class PDPPage(PageTemplate):
 
 
     def accept_selected(self, cell_frames, table_frame):
+       
         for f in cell_frames:
-            if f[0].get() ==1:
-                api.accept_dp(f[1])
-                table_frame.grid_forget()
-                table_frame.destroy()
-                self.cell_frames , self.table_frame =  self.build_table()
+            api.datapoint_a(f)
+            # if f[0].get() ==1:
+            #     api.reject_dp(f[1], f[2])
+        print api.get_pending_dp()
+        if len(cell_frames)>0: 
+            api.datapoint_a(cell_frames[-1])
+        print api.get_pending_dp()
+
+        if len(cell_frames)>0: 
+            api.datapoint_a(cell_frames[0])
+        print api.get_pending_dp()
+
+        for f in cell_frames:
+            api.datapoint_a(f)
+        self.table_frame.grid_forget()
+        self.table_frame.destroy()
+        self.cell_frames , self.table_frame =  self.build_table()
 
 
             
         return
 
     def reject_selected(self, cell_frames, table_frame):
+
         for f in cell_frames:
-            if f[0].get() ==1:
-                api.reject_dp(f[1])
-                table_frame.grid_forget()
-                table_frame.destroy()
-                self.cell_frames , self.table_frame =  self.build_table()
-            
+            api.datapoint_r(f)
+            # if f[0].get() ==1:
+            #     api.reject_dp(f[1], f[2])
+        print api.get_pending_dp()
+        if len(cell_frames)>0: 
+            api.datapoint_r(cell_frames[-1])
+        print api.get_pending_dp()
+
+        if len(cell_frames)>0: 
+            api.datapoint_r(cell_frames[0])
+        print api.get_pending_dp()
+
+        for f in cell_frames:
+            api.datapoint_r(f)
+        self.table_frame.grid_forget()
+        self.table_frame.destroy()
+        self.cell_frames , self.table_frame =  self.build_table()
+    
         return
 
     def add_row(self, table, r, row, bg_color):
@@ -851,7 +1114,7 @@ class PDPPage(PageTemplate):
         td_label = tk.Label(td_frame, bg = bg_color, text=row[3])
         td_label.grid(row=0, column=0, pady = 5, padx = 5)
 
-        return (flag_var, row[3]) #returns flag variable and datetime
+        return (flag_var, row[0],row[3]) #returns flag variable and datetime
 
 
         # return row_ref
@@ -929,21 +1192,22 @@ class POPage(PageTemplate):
         cell_frames = []
         # cell_frames.append(self.add_titles(table_frame, 0, titles, "darkgray")) ##a9a9a9
         self.add_titles(table_frame, 0, titles, "darkgray") ##a9a9a9
-        pending_data_points = api.get_pending_off()
+        pending_officials = api.get_pending_off()
 
-        for i in range(0,len(pending_data_points)):
-            cell_frames.append(self.add_row(table_frame, i+1, pending_data_points[i], "white"))
+        for i in range(0,len(pending_officials)):
+            cell_frames.append(self.add_row(table_frame, i+1, pending_officials[i], "white"))
 
         return cell_frames, table_frame
 
 
     def accept_selected(self, cell_frames, table_frame):
         for f in cell_frames:
-            if f[0].get() ==1:
-                api.accept_official(f[1])
-                table_frame.grid_forget()
-                table_frame.destroy()
-                self.cell_frames , self.table_frame =  self.build_table()
+            api.official_a(f)
+            # if f[0].get() ==1:
+            #     api.accept_official(f[1])
+        self.table_frame.grid_forget()
+        self.table_frame.destroy()
+        self.cell_frames , self.table_frame =  self.build_table()
 
 
             
@@ -951,11 +1215,12 @@ class POPage(PageTemplate):
 
     def reject_selected(self, cell_frames, table_frame):
         for f in cell_frames:
-            if f[0].get() ==1:
-                api.reject_official(f[1])
-                table_frame.grid_forget()
-                table_frame.destroy()
-                self.cell_frames , self.table_frame =  self.build_table()
+            api.official_r(f)
+            # if f[0].get() ==1:
+            #     api.reject_official(f[1])
+        self.table_frame.grid_forget()
+        self.table_frame.destroy()
+        self.cell_frames , self.table_frame =  self.build_table()
             
         return
 
