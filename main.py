@@ -208,15 +208,15 @@ class AddDPPage(PageTemplate):
         PageTemplate.__init__(self,parent)
         main_label = tk.Label(self, text="Add Data Point", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10)
 
-        locn_label = tk.Label(self, text="POI Location Name").grid(row=1, column=0, pady = 5)
-        timedate_label = tk.Label(self, text="Time and Date of Data Reading").grid(row=2, column=0, pady = 5)
-        datatype_label = tk.Label(self, text="Data Type").grid(row=3, column=0, pady = 5)
-        dataval_label = tk.Label(self, text="Data Value").grid(row=4, column=0, pady = 5)
+        locn_label = tk.Label(self, text="POI Location Name").grid(row=1, column=0, pady = 5, sticky="E")
+        timedate_label = tk.Label(self, text="Time and Date of Data Reading").grid(row=2, column=0, pady = 5, sticky="E")
+        datatype_label = tk.Label(self, text="Data Type").grid(row=4, column=0, pady = 5, sticky="E")
+        dataval_label = tk.Label(self, text="Data Value").grid(row=5, column=0, pady = 5, sticky="E")
 
         timedate_entry = tk.Entry(self)
-        timedate_entry.grid(row=2, column=1, pady = 5, padx= 20)
+        timedate_entry.grid(row=2, column=1, pady = 5, padx= 20, sticky="W")
         dataval_entry = tk.Entry(self)
-        dataval_entry.grid(row=4, column=1, pady = 5, padx= 20)
+        dataval_entry.grid(row=5, column=1, pady = 5, padx= 20, sticky="W")
 
 
         ## location option menu
@@ -230,7 +230,7 @@ class AddDPPage(PageTemplate):
 
         # datetime options
         date_frame = tk.Frame(self)
-        date_frame.grid(row=6, column=1, pady = 5, sticky="W", padx = 20)
+        date_frame.grid(row=2, column=1, pady = 5, sticky="W", padx = 20)
 
         #month
         month_options = self.get_month_options()
@@ -258,28 +258,28 @@ class AddDPPage(PageTemplate):
         year_dropdown = apply(OptionMenu, (date_frame, year_var) + tuple(year_options))
         year_dropdown.grid(row=0, column=4, padx = 1, sticky="W")
 
-        dateto_label = tk.Label(self, text="to").grid(row=7, column=1, pady = 0)
+        # dateto_label = tk.Label(self, text="to").grid(row=7, column=1, pady = 0)
 
         ##time stuff
         time_frame = tk.Frame(self)
-        time_frame.grid(row=8, column=1, pady = 5, sticky="W", padx = 20)
+        time_frame.grid(row=3, column=1, pady = 5, sticky="W", padx = 20)
         #hour
         hour_options = self.get_hour_options()
         hour_var = StringVar(self)
         hour_var.set(month_options[0])
 
-        hour_dropdown = apply(OptionMenu, (time_frame, hour_var) + tuple(month_options))
+        hour_dropdown = apply(OptionMenu, (time_frame, hour_var) + tuple(hour_options))
         hour_dropdown.grid(row=0, column=0, padx = 1, sticky="W")
-        slash_label1 = tk.Label(time_frame, text="/").grid(row=0, column=1, sticky = 'E')
+        slash_label1 = tk.Label(time_frame, text=":").grid(row=0, column=1, sticky = 'E')
 
         #minute
         minute_options = self.get_minute_options()
         minute_var = StringVar(self)
         minute_var.set(day_options[0])
 
-        minute_dropdown = apply(OptionMenu, (time_frame, minute_var) + tuple(day_options))
+        minute_dropdown = apply(OptionMenu, (time_frame, minute_var) + tuple(minute_options))
         minute_dropdown.grid(row=0, column=2, padx = 1, sticky="W")
-        slash_label2 = tk.Label(time_frame, text ="/").grid(row=0, column=3,sticky = 'E')
+        # slash_label2 = tk.Label(time_frame, text ="/").grid(row=0, column=3,sticky = 'E')
 
 
         ## datatype option menu
@@ -287,10 +287,10 @@ class AddDPPage(PageTemplate):
         datatype_var = StringVar(self)
         datatype_var.set(datatype_options[0])
         datatype_dropdown = apply(OptionMenu, (self, datatype_var) + tuple(datatype_options))
-        datatype_dropdown.grid(row=3, column=1, padx = 20, pady = 10, sticky="W")
+        datatype_dropdown.grid(row=4, column=1, padx = 20, pady = 10, sticky="W")
 
-        sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller))
-        sub_button.grid(row=7, column=0, padx = 20, pady = 10)
+        sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller, locname_var, datetime.datetime(int(year_var.get()), int(month_var.get()), int(day_var.get()), hour=int(hour_var.get()), minute=int(minute_var.get())), datatype_var.get(), dataval_entry.get()))
+        sub_button.grid(row=8, column=0, padx = 20, pady = 10)
 
         back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
         back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
@@ -299,8 +299,7 @@ class AddDPPage(PageTemplate):
         return api.get_hours()
 
     def get_minute_options(self):
-        return api.get_hours()
-
+        return api.get_minutes()
 
 
     def get_year_options(self):
@@ -312,14 +311,15 @@ class AddDPPage(PageTemplate):
     def get_day_options(self):
         return api.get_days("1")
 
-    def submit(self, controller): #FIXME: probably need to pass an array with values to register with
+    def submit(self, controller, loc_name, time_date, data_type, data_val): #FIXME: probably need to pass an array with values to register with
+        api.add_datapoint(loc_name, time_date, data_type, data_val)
         controller.show_frame(SciPortalPage)
 
     def back(self, controller): #FIXME: probably need to pass an array with values to filter with
         controller.show_frame(SciPortalPage)
 
     def get_loc_options(self): #FIXME: get these from database
-        return [ "Atl, GA","NYC, NY","San Fran, CA"]
+        return api.get_poi_names()
 
     def get_datatype_options(self): #FIXME: get these from database
         return [ "Mold","Air Quality reading"]

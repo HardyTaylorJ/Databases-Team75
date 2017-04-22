@@ -22,6 +22,7 @@ active_user = None
 # reject pending city officials
 # accept pending data points
 # reject pending data points
+# flag
 
 
 def login(username, password):
@@ -100,7 +101,7 @@ def accept_dp(datetime):
 def reject_dp(datetime):
 	return
 
-def add_datapoint(location, timedate, data_type, data_value):
+def add_datapoint(loc_name, time_date, data_type, data_val):
 	"""
 	adds a datapoint to the database and returns an error code
 
@@ -273,3 +274,10 @@ def get_poi_detail(data_type, data_min, data_max, timedate_start, timedate_end):
 	@returns array of length 3 arrays of format [data type, data value, timedate]
 	"""
 	return [[11,22,33][66,77,88]]
+
+
+def flag_poi(poi_name):
+	return
+
+def unflag_poi(poi_name):
+	return
