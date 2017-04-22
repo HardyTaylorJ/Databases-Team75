@@ -13,6 +13,17 @@ conn = sql.connect(host = "academic-mysql.cc.gatech.edu",
 cursor = conn.cursor()
 active_user = None
 
+## todo: 
+# add datapoint
+# add poi
+# get pending data points
+# get pending city officials
+# accept pending city officials
+# reject pending city officials
+# accept pending data points
+# reject pending data points
+
+
 def login(username, password):
 	""" 
 	verifies username password combination and returns user type
@@ -56,17 +67,17 @@ def add_user(username,  email, pwd, confpwd, user_type, type_args):
 	2: duplicate email
 	"""
 
-	print type_args[1:-2]
+	print type_args[0]
 	print type_args[1]
 
 	if confpwd == pwd:
 		users = cursor.execute("SELECT * FROM User WHERE Username = %s",(username))
-		users = cursor.fetchone()
+		# users = cursor.fetchone()
 		if users == 0:
 			cursor.execute("INSERT INTO User VALUES (%s, %s, %s, %s)", (username, email, pwd, user_type))
 			conn.commit()
 			if user_type == "City Official":
-				cursor.execute("INSERT INTO City_Official VALUES (%s, %s, %s, %s, %s)",(username, None, type_args[2], "Atlanta", "Georgia"))
+				cursor.execute("INSERT INTO City_Official VALUES (%s, %s, %s, %s, %s)",(username, None, type_args[2], type_args[0], type_args[1]))
 				conn.commit()
 		else:
 			print "User already exists"
@@ -117,7 +128,10 @@ def get_cities(): #fixme: does this need to deend on state
 	@return array city_list
 	"""
 	cursor.execute("select Distinct City from City_State")
-	return cursor.fetchall()
+	cities = cursor.fetchall()
+
+
+	return [x[0] for x in cities]
 	# return ["Atlanta", "Macon", "Savanna"]
 
 
@@ -129,7 +143,9 @@ def get_states():
 	"""
 	# return ["GA", "TN", "NY"]
 	cursor.execute("select Distinct State from City_State")
-	return cursor.fetchall()
+	states = cursor.fetchall()
+
+	return [x[0] for x in states]
 
 def get_poi_names():
 	"""
@@ -137,7 +153,10 @@ def get_poi_names():
 
 	@return array poi_names
 	"""
-	return ["Little 5 Points", "Georgia Tech", "Macon Mall"]
+	# return ["Little 5 Points", "Georgia Tech", "Macon Mall"]
+	cursor.execute('select Distinct Location_Name from POI')
+	pois = cursor.fetchall()
+	return [x[0] for x in pois]
 
 def get_pending_datapoints():
 	return
@@ -145,7 +164,7 @@ def get_pending_datapoints():
 def get_pending_officials():
 	return
 
-def get_poi(filters):
+def get_poi(vpoi,vcity,vstate,vzip,vflagged,sdate,edate):
 	"""
 	@param array filters 
 	pending
@@ -159,7 +178,50 @@ def get_poi(filters):
 	"""
 	# for k in filters
 
-	return [["GT", "1", "2", "3", "4", "5"],["TECH", "a", "b", "c", "d", "e"],["GATECH", "q", "w", "e", "r", "t"]]#FIXME: remove this
+	joincondition  = []
+	if vpoi != "None":
+		joincondition.append(" Location_Name = '" + vpoi+"'") 
+
+	if vcity != "None":
+		joincondition.append(" city = '" + vcity+"'")
+
+	if vstate != "default":
+		joincondition.append(" state = '" + vstate+"'")
+
+	if vzip != "": #say 00000
+		joincondition.append(" zip = '" + vzip+"'")
+
+	if vflagged == 1:
+		joincondition.append(" flag = 1")
+		if sdate != None:
+			sdatestring ='Date_flagged>"{}"'.format(sdate) 
+			joincondition.append(sdatestring)
+
+		if edate != None:
+			edatestring = 'Date_flagged<"{}"'.format(edate) 
+			joincondition.append(edatestring)
+	else:
+		joincondition.append(" flag = 0")
+
+
+
+	joincondition = " AND ".join(joincondition) 		
+	
+	mainsqlquery = "SELECT Location_Name, City, State,  ZIP, Flag, Date_flagged FROM POI"
+
+	if bool(joincondition): 
+		x = mainsqlquery + " WHERE " + joincondition
+		print x
+		cursor.execute(x)
+		result = cursor.fetchall()
+		print result
+		return result
+	else:
+		cursor.execute(mainsqlquery)
+		return cursor.fetchall()
+
+
+	# return [["GT", "1", "2", "3", "4", "5"],["TECH", "a", "b", "c", "d", "e"],["GATECH", "q", "w", "e", "r", "t"]]#FIXME: remove this
 
 def get_datapoints(filters):
 	"""
@@ -180,13 +242,25 @@ def get_years():
 
 
 def get_months():
-	return list(range(1, 13))
+	# return ['01','02','03','04','05','06','07','08','09','10','11','12']
+	return list(range(1,13))
 
 def get_days(month):
 	return list(range(1, 32))
 
-def get_poi_report():
-	return [ [1,2,3,4,5,6,7,8,9,10,11,12], reversed([1,2,3,4,5,6,7,8,9,10,11,12]) ]
+def get_hours():
+	return list(range(1, 25))
+def get_minutes():
+	return list(range(1, 61))
+
+def get_poi_report(sort_option, order_option):
+	mainview = "SELECT *FROM POIREPORT "
+	Pendingdatapoints = cursor.execute( mainview + " ORDER BY " + sort_option + " " +order_option) 
+
+	Thereport = cursor.fetchall()
+	print Thereport
+	return Thereport
+	# return [ ['01','02','03','04','05','06','07','08','09','10','11','12'], reversed([1,2,3,4,5,6,7,8,9,10,11,12]) ]
 
 def get_pending_dp():
 	return [list(range(1, 7)), list(reversed(range(1, 7)))]

@@ -2,6 +2,7 @@ import Tkinter as tk
 from Tkinter import *
 import api
 import tktable
+import datetime
 # from Tkinter import ttk
 LARGE_FONT=("Verdana", 12)
 
@@ -159,7 +160,7 @@ class RegisterPage(PageTemplate):
         title_entry.grid(row=3, column=1, pady = 5, padx=20)
 
         city_official_info = (city_var.get(), state_var.get(), title_entry.get())
-        sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller, uname_entry.get(),  email_entry.get(),  pwd_entry.get(), cpwd_entry.get(), type_var.get(), city_official_info))
+        sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller, uname_entry.get(),  email_entry.get(),  pwd_entry.get(), cpwd_entry.get(), type_var.get(), (city_var.get(), state_var.get(), title_entry.get())))
         sub_button.grid(row=7, column=0, padx = 20, pady = 10)
 
         back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
@@ -167,6 +168,7 @@ class RegisterPage(PageTemplate):
 
     def submit(self, controller, username, email, pwd, cpwd, user_type, type_args): #FIXME: probably need to pass an array with values to register with
         api.add_user(username, email, pwd, cpwd, user_type, type_args) #FIXME: error handling
+
         controller.show_frame(LoginPage)
 
     def back(self, controller): #FIXME: probably need to pass an array with values to filter with
@@ -226,6 +228,60 @@ class AddDPPage(PageTemplate):
         loc_dropdown = apply(OptionMenu, (self, locname_var) + tuple(loc_options))
         loc_dropdown.grid(row=1, column=1, padx = 20, pady = 10, sticky="W")
 
+        # datetime options
+        date_frame = tk.Frame(self)
+        date_frame.grid(row=6, column=1, pady = 5, sticky="W", padx = 20)
+
+        #month
+        month_options = self.get_month_options()
+        month_var = StringVar(self)
+        month_var.set(month_options[0])
+
+        month_dropdown = apply(OptionMenu, (date_frame, month_var) + tuple(month_options))
+        month_dropdown.grid(row=0, column=0, padx = 1, sticky="W")
+        slash_label1 = tk.Label(date_frame, text="/").grid(row=0, column=1, sticky = 'E')
+
+        #day
+        day_options = self.get_day_options()
+        day_var = StringVar(self)
+        day_var.set(day_options[0])
+
+        day_dropdown = apply(OptionMenu, (date_frame, day_var) + tuple(day_options))
+        day_dropdown.grid(row=0, column=2, padx = 1, sticky="W")
+        slash_label2 = tk.Label(date_frame, text="/").grid(row=0, column=3,sticky = 'E')
+
+        #year
+        year_options = self.get_year_options()
+        year_var = StringVar(self)
+        year_var.set(year_options[0])
+
+        year_dropdown = apply(OptionMenu, (date_frame, year_var) + tuple(year_options))
+        year_dropdown.grid(row=0, column=4, padx = 1, sticky="W")
+
+        dateto_label = tk.Label(self, text="to").grid(row=7, column=1, pady = 0)
+
+        ##time stuff
+        time_frame = tk.Frame(self)
+        time_frame.grid(row=8, column=1, pady = 5, sticky="W", padx = 20)
+        #hour
+        hour_options = self.get_hour_options()
+        hour_var = StringVar(self)
+        hour_var.set(month_options[0])
+
+        hour_dropdown = apply(OptionMenu, (time_frame, hour_var) + tuple(month_options))
+        hour_dropdown.grid(row=0, column=0, padx = 1, sticky="W")
+        slash_label1 = tk.Label(time_frame, text="/").grid(row=0, column=1, sticky = 'E')
+
+        #minute
+        minute_options = self.get_minute_options()
+        minute_var = StringVar(self)
+        minute_var.set(day_options[0])
+
+        minute_dropdown = apply(OptionMenu, (time_frame, minute_var) + tuple(day_options))
+        minute_dropdown.grid(row=0, column=2, padx = 1, sticky="W")
+        slash_label2 = tk.Label(time_frame, text ="/").grid(row=0, column=3,sticky = 'E')
+
+
         ## datatype option menu
         datatype_options = self.get_datatype_options()
         datatype_var = StringVar(self)
@@ -238,6 +294,23 @@ class AddDPPage(PageTemplate):
 
         back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
         back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
+
+    def get_hour_options(self):
+        return api.get_hours()
+
+    def get_minute_options(self):
+        return api.get_hours()
+
+
+
+    def get_year_options(self):
+        return api.get_years()
+
+    def get_month_options(self):
+        return api.get_months()
+
+    def get_day_options(self):
+        return api.get_days("1")
 
     def submit(self, controller): #FIXME: probably need to pass an array with values to register with
         controller.show_frame(SciPortalPage)
@@ -371,20 +444,37 @@ class POIReportPage(PageTemplate):
         table.set("row", "-1,-1", "Results")
 
         filters = []
-        apply_button = tk.Button(self, text="Show Report", command=lambda :self.apply_filter(controller, table, filters))
-        apply_button.grid(row=1, column=0, padx = 20, pady = 10, sticky="E")
 
         back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
         back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
 
-    def apply_filter(self, controller, table, filters): #FIXME: probably need to pass an array with values to filter with
+                        ## sort option menu
+        sort_options = ['POI_Location', 'City', 'State', 'Mold_Min', 'Mold_Avg', 'Mold_Max', 'Aq_min', 'Aq_Avg', 'Aq_Max', 'total_data_points', 'Flagged']
+        sort_var = StringVar(self)
+        sort_var.set(sort_options[0])
+
+        sort_dropdown = apply(OptionMenu, (self, sort_var) + tuple(sort_options))
+        sort_dropdown.grid(row=1, column=0, padx = 20, pady = 10, sticky="W")
+
+                        ## order option menu
+        order_options = ("ASC", "DESC")
+        order_var = StringVar(self)
+        order_var.set(order_options[0])
+
+        order_dropdown = apply(OptionMenu, (self, order_var) + tuple(order_options))
+        order_dropdown.grid(row=1, column=0, padx = 20, pady = 10, sticky="E")
+
+        apply_button = tk.Button(self, text="Show Report", command=lambda :self.apply_filter(controller, table, sort_var.get(), order_var.get()))
+        apply_button.grid(row=1, column=1, padx = 20, pady = 10, sticky="E")
+
+    def apply_filter(self, controller, table, sort_option, order_option): #FIXME: probably need to pass an array with values to filter with
         titles = ("POI Location", "City", "State", "Mold Min", "Mold Avg", "Mold Max", "AQ Min", "AQ Avg", "AQ Max", "# of Data points", "Flagged?")
         r = table.index('end').split(',')[0] #get row number <str>
         idx = r + ',-1'
         table.set('row', idx, *titles)
         table.see(idx)
-        filtered_poi = api.get_poi_report()
-        for r in filtered_poi:
+        pois = api.get_poi_report(sort_option, order_option)
+        for r in pois:
             self.add_new_data(r, table)
 
     def add_new_data(self, row, table):
@@ -483,12 +573,14 @@ class ViewPOIPage(PageTemplate):
         flag_check.grid(row=5, column=1, pady = 5, sticky="W", padx = 20)
 
         ## loc option menu
-        loc_options = self.get_loc_options()
+        loc_options = ('None',) + tuple(self.get_loc_options())
         loc_var = StringVar(self)
         loc_var.set(loc_options[0])
 
         loc_dropdown = apply(OptionMenu, (self, loc_var) + tuple(loc_options))
         loc_dropdown.grid(row=1, column=1, padx = 20, pady = 10, sticky="W")
+
+
 
         ## city option menu
         city_options = self.get_city_options()
@@ -552,8 +644,24 @@ class ViewPOIPage(PageTemplate):
         index = r + ",-1"
         table.set("row", "-1,-1", "Results")
 
+        #         ## sort option menu
+        # sort_options = self.get_loc_options()
+        # sort_var = StringVar(self)
+        # sort_var.set(sort_options[0])
+
+        # sort_dropdown = apply(OptionMenu, (self, sort_var) + tuple(sort_options))
+        # sort_dropdown.grid(row=20, column=0, padx = 20, pady = 10, sticky="W")
+
+        #                 ## order option menu
+        # order_options = ('None',) + tuple(self.get_loc_options())
+        # order_var = StringVar(self)
+        # order_var.set(order_options[0])
+
+        # order_dropdown = apply(OptionMenu, (self, order_var) + tuple(order_options))
+        # order_dropdown.grid(row=20, column=1, padx = 20, pady = 10, sticky="W")
+
         filters = []
-        apply_button = tk.Button(self, text="Apply Filter", command=lambda :self.apply_filter(controller, table, filters))
+        apply_button = tk.Button(self, text="Apply Filter", command=lambda :self.apply_filter(controller, table, loc_var.get(), city_var.get(), state_var.get(), zip_entry.get(), flag_var.get(), datetime.date(int(year_var.get()), int(month_var.get()), int(day_var.get())), datetime.date(int(end_year_var.get()), int(end_month_var.get()), int(end_day_var.get()))))
         apply_button.grid(row=9, column=1, padx = 20, pady = 10, sticky="E")
 
         reset_button = tk.Button(self, text="Reset Filter", command=lambda :self.reset_filter(controller))
@@ -562,13 +670,15 @@ class ViewPOIPage(PageTemplate):
         back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
         back_button.grid(row=11, column=0, padx = 20, pady = 10, sticky="W")
 
-    def apply_filter(self, controller, table, filters): #FIXME: probably need to pass an array with values to filter with
+
+
+    def apply_filter(self, controller, table, location,city,state,zipc,flag,sdate,edate): #FIXME: probably need to pass an array with values to filter with
         titles = ("Location Name", "City", "State", "Zip Code", "Flagged", "Date Flagged")
         r = table.index('end').split(',')[0] #get row number <str>
         idx = r + ',-1'
         table.set('row', idx, *titles)
         table.see(idx)
-        filtered_poi = api.get_poi(filters)
+        filtered_poi = api.get_poi(location,city,state,zipc,flag,sdate,edate)
         for r in filtered_poi:
             self.add_new_data(r, table)
 
@@ -694,7 +804,7 @@ class PDPPage(PageTemplate):
                 api.accept_dp(f[1])
                 table_frame.grid_forget()
                 table_frame.destroy()
-                self.cell_frames , self.table_frame =  build_table
+                self.cell_frames , self.table_frame =  self.build_table()
 
 
             
@@ -706,7 +816,7 @@ class PDPPage(PageTemplate):
                 api.reject_dp(f[1])
                 table_frame.grid_forget()
                 table_frame.destroy()
-                self.cell_frames , self.table_frame =  build_table
+                self.cell_frames , self.table_frame =  self.build_table()
             
         return
 
@@ -832,7 +942,7 @@ class POPage(PageTemplate):
                 api.accept_official(f[1])
                 table_frame.grid_forget()
                 table_frame.destroy()
-                self.cell_frames , self.table_frame =  build_table
+                self.cell_frames , self.table_frame =  self.build_table()
 
 
             
@@ -844,7 +954,7 @@ class POPage(PageTemplate):
                 api.reject_official(f[1])
                 table_frame.grid_forget()
                 table_frame.destroy()
-                self.cell_frames , self.table_frame =  build_table
+                self.cell_frames , self.table_frame =  self.build_table()
             
         return
 
