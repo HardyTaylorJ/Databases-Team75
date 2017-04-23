@@ -425,8 +425,13 @@ def get_flag(poi_name):
 	return cursor.fetchone()
 
 
+#FIXME:
 def get_datatypes():
-	return ["Mold", "Air Quality Reading"]
+
+	cursor.execute("SELECT Distinct Type FROM Data_Type")
+	return [x[0] for x in cursor.fetchall()]
+
+	# return ["Mold", "Air Quality Reading"]
 
 def official_r(f):
 	print 'entered reject official for ' +f[1] + "with an f[0] of "+ str(f[0].get())
