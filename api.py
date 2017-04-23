@@ -1,6 +1,7 @@
 from Tkinter import*
 #from tkinter import messagebox
 import base64
+import re
 import pymysql as sql
 import os
 from datetime import date
@@ -78,6 +79,10 @@ def add_user(username,  email, pwd, confpwd, user_type, type_args):
 	if username=="" or email=="" or pwd=="" or confpwd=="":
 		raise ValueError("Username, Email, Password, and Confirm Password are all required fields for all user types")
 		return
+
+	regex="^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+	if not re.match(regex, email):
+		raise ValueError("email address not valid")
 
 	if confpwd == pwd:
 		users = cursor.execute("SELECT * FROM User WHERE Username = %s",(username))
