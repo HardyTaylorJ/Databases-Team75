@@ -317,8 +317,11 @@ class AddDPPage(PageTemplate):
         return api.get_days("1")
 
     def submit(self, controller, loc_name, time_date, data_type, data_val): #FIXME: probably need to pass an array with values to register with
-        api.add_datapoint(loc_name, time_date, data_type, data_val)
-        controller.show_frame(SciPortalPage)
+        try:
+            api.add_datapoint(loc_name, time_date, data_type, data_val)
+            controller.show_frame(SciPortalPage)
+        except Exception as e:
+            tkMessageBox.showinfo("Error", e)
 
     def back(self, controller): #FIXME: probably need to pass an array with values to filter with
         controller.show_frame(SciPortalPage)
@@ -366,8 +369,11 @@ class AddPOIPage(PageTemplate):
         back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
 
     def submit(self, controller, loc_name, city, state, zip_code): #FIXME: probably need to pass an array with values to register with
-        api.add_poi(loc_name, city, state, zip_code)
-        controller.show_frame(SciPortalPage)
+        try:
+            api.add_poi(loc_name, city, state, zip_code)
+            controller.show_frame(SciPortalPage)
+        except Exception as e:
+            tkMessageBox.showinfo("Error", e)
 
     def back(self, controller): #FIXME: probably need to pass an array with values to filter with
         controller.show_frame(SciPortalPage)

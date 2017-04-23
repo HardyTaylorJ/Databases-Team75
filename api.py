@@ -142,6 +142,14 @@ def add_datapoint(vpoilocation, vdatetime, vdatatype, vdatavalue):
 	# 	print 'time not valid'
 	# 	return
 	# 	#error message + print("the time given is not valid, (in the future) (i dunno what to say this correctly)")
+	if vpoilocation=="" or vdatetime=="" or vdatatype=="" or vdatavalue=="":
+		raise ValueError("All fields are required")
+		return
+	try:
+		float(vdatavalue)
+	except:
+		raise TypeError("data value must be a number")
+		return
 	print vdatetime
 	execute_string = "select * from Data_Point where Location_Name='{}'".format(vpoilocation) + ' and Date_Time="{}"'.format(vdatetime) 
 	# cursor.execute("select * from Data_Point where Location_Name=%s and Date_Time=%s",(vpoilocation,vdatetime))
@@ -157,7 +165,8 @@ def add_datapoint(vpoilocation, vdatetime, vdatatype, vdatavalue):
 		cursor.execute("INSERT INTO Data_Point Values(%s, %s, %s, %s, %s)", (vpoilocation, vdatetime, vdatavalue, None, vdatatype))
 		conn.commit()
 	else:
-		print 'datapoint  with the same location name and date reading already exists'
+		raise ValueError("Data point with the same location name and date reading already exists")
+		# print 'datapoint  with the same location name and date reading already exists'
 	#error message + print("data point with the same location name and date reading already exists")
 
 	return 0
@@ -170,17 +179,26 @@ def add_poi(vpoilocation, vcity, vstate, vzip):
 	0: success
 
 	"""
+	if vpoilocation=="" or vcity=="" or vstate=="" or vzip=="":
+		raise ValueError("All fields are required")
+		return
 	vdateflagged = None
-	vzip = int(vzip)
+	
+	try:
+		vzip = int(vzip)
+	except:
+		raise TypeError("Zip code must be an integer")
+		return
 	print vzip
 	# print len(vzip)
 	print vstate.strip()
-	if vpoilocation=="":
-		print 'no location'
-		return
+	# if vpoilocation=="":
+	# 	print 'no location'
+	# 	return
 	#error message + print("all of the fields must be filled")
 	if vzip>100000:
-		print 'incorrect zip code format'
+		raise ValueError("Zip Code Must be 5 digits")
+		# print 'incorrect zip code format'
 		return
 		#error message + print("please input a correct format of zipcode")
 
@@ -191,7 +209,8 @@ def add_poi(vpoilocation, vcity, vstate, vzip):
 		conn.commit()
 	else:
 		#error message + print("Poi with the same location name of combination of city and state already exists")
-		print "POI with same location name of combination of city and state already exists"
+		raise ValueError("POI with same location name and combination of city and state already exists")
+		# print "POI with same location name and combination of city and state already exists"
 	return 0
 
 def get_cities(): #fixme: does this need to deend on state
