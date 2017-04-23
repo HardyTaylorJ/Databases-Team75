@@ -1,7 +1,7 @@
 import Tkinter as tk
 from Tkinter import *
 import api
-import tktable
+# import tktable
 import datetime
 # from Tkinter import ttk
 LARGE_FONT=("Verdana", 12)
@@ -385,7 +385,7 @@ class OffPortalPage(PageTemplate):
 
         logout_button = tk.Button(self, text="Logout", command=lambda :self.logout(controller)).grid(row=3, column=0, padx = 20, pady = 10, sticky="W")
 
-        sdetail_button = tk.Button(self, text="test poidetail", command=lambda :self.detail_window(parent, controller)).grid(row=4, column=0, padx = 20, pady = 10, sticky="W")
+        # sdetail_button = tk.Button(self, text="test poidetail", command=lambda :self.detail_window(parent, controller)).grid(row=4, column=0, padx = 20, pady = 10, sticky="W")
 
 
     def fs_poi(self, controller):
