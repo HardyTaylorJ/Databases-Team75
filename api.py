@@ -15,7 +15,6 @@ active_user = None
 
 ## todo: 
 # sorting for pending data points
-# change tktable to grid in view POIs or add reset
 # finish poi detail
 # put title bar on poi detail
 # email address constraints with regex in google doc
@@ -317,9 +316,9 @@ def get_days(month):
 	return list(range(1, 32))
 
 def get_hours():
-	return list(range(1, 25))
+	return list(range(0, 24))
 def get_minutes():
-	return list(range(1, 61))
+	return list(range(0, 60))
 
 def get_poi_report(sort_option, order_option):
 	mainview = "SELECT *FROM POIREPORT "

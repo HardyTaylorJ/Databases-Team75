@@ -391,12 +391,7 @@ class OffPortalPage(PageTemplate):
     def fs_poi(self, controller):
         controller.show_frame(ViewPOIPage)
 
-    def detail_window(self, parent, controller):
-        window = tk.Toplevel(self)
-        frame = POIDetail(window, self, "", "")
-        # window.frames[F] = frame
-        frame.grid(row=0, column = 0, sticky=N+E+S+W)
-        # self.show_frame(frame)
+
 
 
     def poi_report(self, controller):
@@ -716,7 +711,7 @@ class POIReportPage(PageTemplate):
         titles = ['POI_Location', 'City', 'State', 'Mold_Min', 'Mold_Avg', 'Mold_Max', 'Aq_min', 'Aq_Avg', 'Aq_Max', 'total_data_points', 'Flagged']
         cell_frames = []
         # cell_frames.append(self.add_titles(table_frame, 0, titles, "darkgray")) ##a9a9a9
-        self.add_row(table_frame, 0, titles, "darkgray") ##a9a9a9
+        self.add_titles(table_frame, 0, titles, "darkgray") ##a9a9a9
         report = api.get_poi_report(sort_option, order_option)
 
         for i in range(0,len(report)):
@@ -725,6 +720,74 @@ class POIReportPage(PageTemplate):
         return cell_frames, table_frame
 
     def add_row(self, table, r, row, bg_color):
+        # row
+        # officials_frame = tk.Frame(self, bd=1, relief=SUNKEN)
+        # r = 0
+        a_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        a_frame.grid(row=r, column=0,sticky=N+S+E+W)
+        a_label = tk.Label(a_frame, bg = bg_color, text=row[0])
+        a_label.grid(row=0, column=0, pady = 5, padx = 5)
+        # a_button = tk.Button(self, text="...", command=lambda :self.detail_window(row[0]))
+        # a_button.grid(row=0, column=1, padx = 5, pady = 5, sticky="E")
+
+
+
+        b_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        b_frame.grid(row=r, column=1,sticky=N+S+E+W)
+        b_label = tk.Label(b_frame, bg = bg_color, text=row[1])
+        b_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        c_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        c_frame.grid(row=r, column=2,sticky=N+S+E+W)
+        c_label = tk.Label(c_frame, bg = bg_color, text=row[2])
+        c_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        d_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        d_frame.grid(row=r, column=3,sticky=N+S+E+W)
+        d_label = tk.Label(d_frame, bg = bg_color, text=row[3])
+        d_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        e_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        e_frame.grid(row=r, column=4,sticky=N+S+E+W)
+        e_label = tk.Label(e_frame, bg = bg_color, text=row[4])
+        e_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+        f_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        f_frame.grid(row=r, column=5,sticky=N+S+E+W)
+        f_label = tk.Label(f_frame, bg = bg_color, text=row[5])
+        f_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+        g_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        g_frame.grid(row=r, column=6,sticky=N+S+E+W)
+        g_label = tk.Label(g_frame, bg = bg_color, text=row[6])
+        g_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+        h_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        h_frame.grid(row=r, column=7,sticky=N+S+E+W)
+        h_label = tk.Label(h_frame, bg = bg_color, text=row[7])
+        h_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+        i_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        i_frame.grid(row=r, column=8,sticky=N+S+E+W)
+        i_label = tk.Label(i_frame, bg = bg_color, text=row[8])
+        i_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+        j_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        j_frame.grid(row=r, column=9,sticky=N+S+E+W)
+        j_label = tk.Label(j_frame, bg = bg_color, text=row[9])
+        j_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+        k_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        k_frame.grid(row=r, column=10,sticky=N+S+E+W)
+        k_label = tk.Label(k_frame, bg = bg_color, text=row[10])
+        k_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+        # l_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        # l_frame.grid(row=r, column=5,sticky=N+S+E+W)
+        # l_label = tk.Label(l_frame, bg = bg_color, text=row[5])
+        # l_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+    def add_titles(self, table, r, row, bg_color):
         # row
         # officials_frame = tk.Frame(self, bd=1, relief=SUNKEN)
         # r = 0
@@ -787,6 +850,7 @@ class POIReportPage(PageTemplate):
         # l_frame.grid(row=r, column=5,sticky=N+S+E+W)
         # l_label = tk.Label(l_frame, bg = bg_color, text=row[5])
         # l_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
 
     def apply_filter(self, sort_option, order_option): #FIXME: probably need to pass an array with values to filter with
         self.table_frame.grid_forget()
@@ -1000,7 +1064,7 @@ class ViewPOIPage(PageTemplate):
         titles = ["Location Name", "City", "State", "Zip code", "Flagged?", "Date Flagged"]
         cell_frames = []
         # cell_frames.append(self.add_titles(table_frame, 0, titles, "darkgray")) ##a9a9a9
-        self.add_row(table_frame, 0, titles, "darkgray") ##a9a9a9
+        self.add_titles(table_frame, 0, titles, "darkgray") ##a9a9a9
         pending_data_points = api.get_poi(location,city,state,zipc,flag,sdate,edate)
 
         for i in range(0,len(pending_data_points)):
@@ -1016,6 +1080,8 @@ class ViewPOIPage(PageTemplate):
         a_frame.grid(row=r, column=0,sticky=N+S+E+W)
         a_label = tk.Label(a_frame, bg = bg_color, text=row[0])
         a_label.grid(row=0, column=0, pady = 5, padx = 5)
+        a_button = tk.Button(a_frame, text="...", command=lambda :self.detail_window(row[0]))
+        a_button.grid(row=0, column=1, padx = 5, pady = 5, sticky="E")
 
         b_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
         b_frame.grid(row=r, column=1,sticky=N+S+E+W)
@@ -1051,33 +1117,33 @@ class ViewPOIPage(PageTemplate):
         # officials_frame = tk.Frame(self, bd=1, relief=SUNKEN)
         r = 0
         a_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
-        a_frame.grid(row=r, column=0)
+        a_frame.grid(row=r, column=0,sticky=N+S+E+W)
         a_label = tk.Label(a_frame, bg = bg_color, text=row[0])
         a_label.grid(row=0, column=0, pady = 5, padx = 5)
 
         b_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
-        b_frame.grid(row=r, column=1)
+        b_frame.grid(row=r, column=1,sticky=N+S+E+W)
         b_label = tk.Label(b_frame, bg = bg_color, text=row[1])
         b_label.grid(row=0, column=0, pady = 5, padx = 5)
 
         c_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
-        c_frame.grid(row=r, column=2)
+        c_frame.grid(row=r, column=2,sticky=N+S+E+W)
         c_label = tk.Label(c_frame, bg = bg_color, text=row[2])
         c_label.grid(row=0, column=0, pady = 5, padx = 5)
 
         d_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
-        d_frame.grid(row=r, column=3)
+        d_frame.grid(row=r, column=3,sticky=N+S+E+W)
         d_label = tk.Label(d_frame, bg = bg_color, text=row[3])
         d_label.grid(row=0, column=0, pady = 5, padx = 5)
 
         e_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
-        e_frame.grid(row=r, column=4)
+        e_frame.grid(row=r, column=4,sticky=N+S+E+W)
         e_label = tk.Label(e_frame, bg = bg_color, text=row[4])
         e_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
 
         f_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
-        f_frame.grid(row=r, column=4)
-        f_label = tk.Label(f_frame, bg = bg_color, text=row[4])
+        f_frame.grid(row=r, column=5,sticky=N+S+E+W)
+        f_label = tk.Label(f_frame, bg = bg_color, text=row[5])
         f_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
 
 
@@ -1133,6 +1199,13 @@ class ViewPOIPage(PageTemplate):
 
     def get_day_options(self):
         return api.get_days("1")
+
+    def detail_window(self, poi_name):
+        window = tk.Toplevel(self)
+        frame = POIDetail(window, self, "", "")
+        # window.frames[F] = frame
+        frame.grid(row=0, column = 0, sticky=N+E+S+W)
+        # self.show_frame(frame)
 
 
 
