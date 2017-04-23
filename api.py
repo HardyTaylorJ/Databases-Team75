@@ -342,11 +342,25 @@ def get_pending_off():
 
 	# return [list(range(1, 6)), list(reversed(range(1, 6)))]
 
-def get_poi_detail(data_type, data_min, data_max, timedate_start, timedate_end):
+def get_poi_detail(vpoilocation, vtype, vminvalue, vmaxvalue, vmindate, vmaxdate):
 	"""
 	@returns array of length 3 arrays of format [data type, data value, timedate]
 	"""
-	return [[11,22,33],[66,77,88]]
+	vjoincondition = ["Location_Name = '"+vpoilocation+"'"]
+	if vtype != "All":
+	vjoincondition.append("Data_Type = '" vtype+"'")
+
+	if vminvalue!="" and vmaxvalue!="": #FIXME: better error checking
+		vjoincondition.append("Data_Value > '" + vminvalue+ "'' AND "+  "Data_Value < '" + vmaxvalue+"'" ) 
+
+	vjoincondition.append("Date_Time > '" + vminvalue+"'")
+	vjoincodition.append("Date_Time < '" + vmaxvalue+"'")
+	vjoincondition = " AND ".join(vjoincondition)
+	vjoincondition = " WHERE " + vjoincondition
+
+	Poidetails = cursor.execute("SELECT Data_Type, Data_Value, Date_Time FROM Data_Point {} ORDER BY Date_Time ".format(vjoincondition) )
+
+	# return [[11,22,33],[66,77,88]]
 
 
 def flag_poi(poi_name):

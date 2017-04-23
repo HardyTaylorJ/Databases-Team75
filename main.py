@@ -405,6 +405,7 @@ class OffPortalPage(PageTemplate):
 class POIDetail(PageTemplate):
     def __init__(self, parent, controller, poi_name):
         PageTemplate.__init__(self,parent)
+        self.poi_name = poi_name
         main_label = tk.Label(self, text="POI Details for "+poi_name, font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10, padx=20)
 
         type_label = tk.Label(self, text="Data Type").grid(row=1, column=0, pady = 5, sticky = 'E')
@@ -556,7 +557,7 @@ class POIDetail(PageTemplate):
         cell_frames = []
         # cell_frames.append(self.add_titles(table_frame, 0, titles, "darkgray")) ##a9a9a9
         self.add_row(table_frame, 0, titles, "darkgray") ##a9a9a9
-        pending_data_points = api.get_poi_detail(data_type, data_min, data_max, timedate_start, timedate_end)
+        pending_data_points = api.get_poi_detail(self.poi_name, data_type, data_min, data_max, timedate_start, timedate_end)
 
         for i in range(0,len(pending_data_points)):
             cell_frames.append(self.add_row(table_frame, i+1, pending_data_points[i], "white"))
