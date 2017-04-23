@@ -1274,27 +1274,27 @@ class PDPPage(PageTemplate):
         # officials_frame = tk.Frame(self, bd=1, relief=SUNKEN)
         r = 0
         flag_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
-        flag_frame.grid(row=r, column=0)
+        flag_frame.grid(row=r, column=0, sticky=N+S+E+W)
         flag_label = tk.Label(flag_frame, bg = bg_color, text=row[0])
         flag_label.grid(row=0, column=0, pady = 5, padx = 5)
 
         locn_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
-        locn_frame.grid(row=r, column=1)
+        locn_frame.grid(row=r, column=1, sticky=N+S+E+W)
         locn_label = tk.Label(locn_frame, bg = bg_color, text=row[1])
         locn_label.grid(row=0, column=0, pady = 5, padx = 5)
 
         dtype_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
-        dtype_frame.grid(row=r, column=2)
+        dtype_frame.grid(row=r, column=2, sticky=N+S+E+W)
         dtype_label = tk.Label(dtype_frame, bg = bg_color, text=row[2])
         dtype_label.grid(row=0, column=0, pady = 5, padx = 5)
 
         dval_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
-        dval_frame.grid(row=r, column=3)
+        dval_frame.grid(row=r, column=3, sticky=N+S+E+W)
         dval_label = tk.Label(dval_frame, bg = bg_color, text=row[3])
         dval_label.grid(row=0, column=0, pady = 5, padx = 5)
 
         td_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
-        td_frame.grid(row=r, column=4)
+        td_frame.grid(row=r, column=4, sticky=N+S+E+W)
         td_label = tk.Label(td_frame, bg = bg_color, text=row[4])
         td_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
 
@@ -1304,7 +1304,7 @@ class PDPPage(PageTemplate):
 class POPage(PageTemplate):
     def __init__(self, parent, controller):
         PageTemplate.__init__(self,parent)
-        main_label = tk.Label(self, text="Pending City Officials", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10)
+        main_label = tk.Label(self, text="Pending City Officials", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10, padx=200)
 
         # table goes here
                 ##table stuff
@@ -1419,7 +1419,7 @@ class POPage(PageTemplate):
         # officials_frame = tk.Frame(self, bd=1, relief=SUNKEN)
         r = 0
         flag_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
-        flag_frame.grid(row=r, column=0)
+        flag_frame.grid(row=r, column=0, sticky=N+S+E+W)
         flag_label = tk.Label(flag_frame, bg = bg_color, text=row[0])
         flag_label.grid(row=0, column=0, pady = 5, padx = 5)
 
