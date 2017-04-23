@@ -1,5 +1,6 @@
 import Tkinter as tk
 from Tkinter import *
+import tkMessageBox
 import api
 # import tktable
 import datetime
@@ -74,6 +75,7 @@ class LoginPage(PageTemplate):
         #check login creds
         #
         if user_type == "Invalid":
+            tkMessageBox.showinfo("Error", "Invalid Username or Password")
             return
         #   create popup window sayig its invalid
         #
