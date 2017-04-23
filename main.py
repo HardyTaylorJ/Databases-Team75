@@ -811,7 +811,7 @@ class ViewPOIPage(PageTemplate):
         flag_check.grid(row=5, column=1, pady = 5, sticky="W", padx = 20)
 
         ## loc option menu
-        loc_options = ('None',) + tuple(self.get_loc_options())
+        loc_options = ('any',) + tuple(self.get_loc_options())
         loc_var = StringVar(self)
         loc_var.set(loc_options[0])
 
@@ -821,7 +821,7 @@ class ViewPOIPage(PageTemplate):
 
 
         ## city option menu
-        city_options = self.get_city_options()
+        city_options = ('any',) + tuple(self.get_city_options())
         city_var = StringVar(self)
         city_var.set(city_options[0])
 
@@ -829,7 +829,7 @@ class ViewPOIPage(PageTemplate):
         city_dropdown.grid(row=2, column=1, padx = 20, pady = 10, sticky="W")
 
         ## state option menu
-        state_options = self.get_state_options()
+        state_options = ('any',) + tuple(self.get_state_options())
         state_var = StringVar(self)
         state_var.set(state_options[0])
         state_dropdown = apply(OptionMenu, (self, state_var) + tuple(state_options))
@@ -839,67 +839,80 @@ class ViewPOIPage(PageTemplate):
 
 
 
-        ##table stuff
-        table_frame = tk.Frame(self)
-        table_frame.grid(row=10,column=0, columnspan=2, padx=0,pady=5)
-        numrows, numcols = 0, 6
+        # ##table stuff
+        # table_frame = tk.Frame(self)
+        # table_frame.grid(row=10,column=0, columnspan=2, padx=0,pady=5)
+        # numrows, numcols = 0, 6
 
-        var = tktable.ArrayVar(table_frame)
-        for y in range(numrows):
-            for x in range(numcols):
-                index = "%i,%i" % (y, x)
-                var[index] = index
+        # var = tktable.ArrayVar(table_frame)
+        # for y in range(numrows):
+        #     for x in range(numcols):
+        #         index = "%i,%i" % (y, x)
+        #         var[index] = index
 
-        table = tktable.Table(table_frame, 
-            rows = numrows,
-            cols = numcols,
-            state='normal',
-            titlerows=1,
-            titlecols=0,
-            colwidth=10,
-            height=10,
-            roworigin=-1,
-            colorigin=-1,
-            selectmode='extended',
-            selecttype='row',
-            rowstretch='all',
-            colstretch='last',
-            # browsecmd=browsecmd,
-            flashmode='on',
-            variable=var,
-            usecommand=0
-        )
-        scroll = Scrollbar(table_frame, orient='vertical', command=table.yview_scroll)
-        table.config(yscrollcommand=scroll.set)
-        scroll.pack(side='right', fill='y')
-        table.pack(expand=1, fill='y')
+        # table = tktable.Table(table_frame, 
+        #     rows = numrows,
+        #     cols = numcols,
+        #     state='normal',
+        #     titlerows=1,
+        #     titlecols=0,
+        #     colwidth=10,
+        #     height=10,
+        #     roworigin=-1,
+        #     colorigin=-1,
+        #     selectmode='extended',
+        #     selecttype='row',
+        #     rowstretch='all',
+        #     colstretch='last',
+        #     # browsecmd=browsecmd,
+        #     flashmode='on',
+        #     variable=var,
+        #     usecommand=0
+        # )
+        # scroll = Scrollbar(table_frame, orient='vertical', command=table.yview_scroll)
+        # table.config(yscrollcommand=scroll.set)
+        # scroll.pack(side='right', fill='y')
+        # table.pack(expand=1, fill='y')
         
-        # table.grid(row=0, column=0)
-        # scroll.grid(row=0, column=1)
-        titles = ("Location Name", "City", "State", "Zip Code", "Flagged", "Date Flagged")
-        r = table.index('end').split(',')[0]
-        print r
-        index = r + ",-1"
-        table.set("row", "-1,-1", "Results")
+        # # table.grid(row=0, column=0)
+        # # scroll.grid(row=0, column=1)
+        # titles = ("Location Name", "City", "State", "Zip Code", "Flagged", "Date Flagged")
+        # r = table.index('end').split(',')[0]
+        # print r
+        # index = r + ",-1"
+        # table.set("row", "-1,-1", "Results")
 
-        #         ## sort option menu
-        # sort_options = self.get_loc_options()
-        # sort_var = StringVar(self)
-        # sort_var.set(sort_options[0])
+        # #         ## sort option menu
+        # # sort_options = self.get_loc_options()
+        # # sort_var = StringVar(self)
+        # # sort_var.set(sort_options[0])
 
-        # sort_dropdown = apply(OptionMenu, (self, sort_var) + tuple(sort_options))
-        # sort_dropdown.grid(row=20, column=0, padx = 20, pady = 10, sticky="W")
+        # # sort_dropdown = apply(OptionMenu, (self, sort_var) + tuple(sort_options))
+        # # sort_dropdown.grid(row=20, column=0, padx = 20, pady = 10, sticky="W")
 
-        #                 ## order option menu
-        # order_options = ('None',) + tuple(self.get_loc_options())
-        # order_var = StringVar(self)
-        # order_var.set(order_options[0])
+        # #                 ## order option menu
+        # # order_options = ('None',) + tuple(self.get_loc_options())
+        # # order_var = StringVar(self)
+        # # order_var.set(order_options[0])
 
-        # order_dropdown = apply(OptionMenu, (self, order_var) + tuple(order_options))
-        # order_dropdown.grid(row=20, column=1, padx = 20, pady = 10, sticky="W")
+        # # order_dropdown = apply(OptionMenu, (self, order_var) + tuple(order_options))
+        # # order_dropdown.grid(row=20, column=1, padx = 20, pady = 10, sticky="W")
 
-        filters = []
-        apply_button = tk.Button(self, text="Apply Filter", command=lambda :self.apply_filter(controller, table, loc_var.get(), city_var.get(), state_var.get(), zip_entry.get(), flag_var.get(), datetime.date(int(year_var.get()), int(month_var.get()), int(day_var.get())), datetime.date(int(end_year_var.get()), int(end_month_var.get()), int(end_day_var.get()))))
+        # filters = []
+
+        
+
+        self.cell_frames, self.table_frame = self.build_table("any","any","any","",0,"","" )
+
+        # back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
+        # back_button.grid(row=9, column=0, padx = 20, pady = 10)
+
+        # reject_button = tk.Button(self, text="Reject", command=lambda :self.reject_selected(self.cell_frames, self.table_frame))
+        # reject_button.grid(row=9, column=1, padx = 20, pady = 10, sticky = "W")
+        # accept_button = tk.Button(self, text="Acept", command=lambda :self.accept_selected(self.cell_frames, self.table_frame))
+        # accept_button.grid(row=9, column=1, padx = 20, pady = 10, sticky = "E")
+
+        apply_button = tk.Button(self, text="Apply Filter", command=lambda :self.apply_filter(controller, loc_var.get(), city_var.get(), state_var.get(), zip_entry.get(), flag_var.get(), datetime.date(int(year_var.get()), int(month_var.get()), int(day_var.get())), datetime.date(int(end_year_var.get()), int(end_month_var.get()), int(end_day_var.get()))))
         apply_button.grid(row=9, column=1, padx = 20, pady = 10, sticky="E")
 
         reset_button = tk.Button(self, text="Reset Filter", command=lambda :self.reset_filter(controller))
@@ -908,17 +921,109 @@ class ViewPOIPage(PageTemplate):
         back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
         back_button.grid(row=11, column=0, padx = 20, pady = 10, sticky="W")
 
+    def build_table(self, location,city,state,zipc,flag,sdate,edate):
+        table_frame = tk.Frame(self)
+        table_frame.grid(row=10,column=0, columnspan=2, padx=5,pady=5)
+        numrows, numcols = 0, 6
+
+        titles = ["Location Name", "City", "State", "Zip code", "Flagged?", "Date Flagged"]
+        cell_frames = []
+        # cell_frames.append(self.add_titles(table_frame, 0, titles, "darkgray")) ##a9a9a9
+        self.add_row(table_frame, 0, titles, "darkgray") ##a9a9a9
+        pending_data_points = api.get_poi(location,city,state,zipc,flag,sdate,edate)
+
+        for i in range(0,len(pending_data_points)):
+            cell_frames.append(self.add_row(table_frame, i+1, pending_data_points[i], "white"))
+
+        return cell_frames, table_frame
+
+    def add_row(self, table, r, row, bg_color):
+        # row
+        # officials_frame = tk.Frame(self, bd=1, relief=SUNKEN)
+        # r = 0
+        a_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        a_frame.grid(row=r, column=0,sticky=N+S+E+W)
+        a_label = tk.Label(a_frame, bg = bg_color, text=row[0])
+        a_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        b_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        b_frame.grid(row=r, column=1,sticky=N+S+E+W)
+        b_label = tk.Label(b_frame, bg = bg_color, text=row[1])
+        b_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        c_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        c_frame.grid(row=r, column=2,sticky=N+S+E+W)
+        c_label = tk.Label(c_frame, bg = bg_color, text=row[2])
+        c_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        d_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        d_frame.grid(row=r, column=3,sticky=N+S+E+W)
+        d_label = tk.Label(d_frame, bg = bg_color, text=row[3])
+        d_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        e_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        e_frame.grid(row=r, column=4,sticky=N+S+E+W)
+        e_label = tk.Label(e_frame, bg = bg_color, text=row[4])
+        e_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+        f_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        f_frame.grid(row=r, column=5,sticky=N+S+E+W)
+        f_label = tk.Label(f_frame, bg = bg_color, text=row[5])
+        f_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+        # return (flag_var, row[0],row[3]) #returns flag variable and datetime
 
 
-    def apply_filter(self, controller, table, location,city,state,zipc,flag,sdate,edate): #FIXME: probably need to pass an array with values to filter with
-        titles = ("Location Name", "City", "State", "Zip Code", "Flagged", "Date Flagged")
-        r = table.index('end').split(',')[0] #get row number <str>
-        idx = r + ',-1'
-        table.set('row', idx, *titles)
-        table.see(idx)
-        filtered_poi = api.get_poi(location,city,state,zipc,flag,sdate,edate)
-        for r in filtered_poi:
-            self.add_new_data(r, table)
+        # return row_ref
+    def add_titles(self, table, r, row, bg_color):
+        # row
+        # officials_frame = tk.Frame(self, bd=1, relief=SUNKEN)
+        r = 0
+        a_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        a_frame.grid(row=r, column=0)
+        a_label = tk.Label(a_frame, bg = bg_color, text=row[0])
+        a_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        b_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        b_frame.grid(row=r, column=1)
+        b_label = tk.Label(b_frame, bg = bg_color, text=row[1])
+        b_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        c_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        c_frame.grid(row=r, column=2)
+        c_label = tk.Label(c_frame, bg = bg_color, text=row[2])
+        c_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        d_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        d_frame.grid(row=r, column=3)
+        d_label = tk.Label(d_frame, bg = bg_color, text=row[3])
+        d_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        e_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        e_frame.grid(row=r, column=4)
+        e_label = tk.Label(e_frame, bg = bg_color, text=row[4])
+        e_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+        f_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        f_frame.grid(row=r, column=4)
+        f_label = tk.Label(f_frame, bg = bg_color, text=row[4])
+        f_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+
+
+
+    def apply_filter(self, controller, location,city,state,zipc,flag,sdate,edate): #FIXME: probably need to pass an array with values to filter with
+        # titles = ("Location Name", "City", "State", "Zip Code", "Flagged", "Date Flagged")
+        self.table_frame.grid_forget()
+        self.table_frame.destroy()
+        self.cell_frames, self.table_frame = self.build_table(location,city,state,zipc,flag,sdate,edate)
+        # r = table.index('end').split(',')[0] #get row number <str>
+        # idx = r + ',-1'
+        # table.set('row', idx, *titles)
+        # table.see(idx)
+        # filtered_poi = api.get_poi(location,city,state,zipc,flag,sdate,edate)
+        # for r in filtered_poi:
+        #     self.add_new_data(r, table)
 
     def add_new_data(self, row, table):
         #table.config(state='normal')
@@ -931,10 +1036,11 @@ class ViewPOIPage(PageTemplate):
 
 
     def reset_filter(self, controller): #FIXME: probably need to pass an array with values to filter with
-        controller.show_frame(OffPortalPage)
+        self.table_frame.grid_forget()
+        self.table_frame.destroy()
+        self.cell_frames, self.table_frame = self.build_table("any","any","any","",0,"","" )
 
-    def back(self, controller): #FIXME: probably need to pass an array with values to filter with
-        controller.show_frame(OffPortalPage)
+
 
     def back(self, controller): #FIXME: probably need to pass an array with values to filter with
         controller.show_frame(OffPortalPage)

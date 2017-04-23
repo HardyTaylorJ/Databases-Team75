@@ -15,7 +15,6 @@ active_user = None
 
 ## todo: 
 # sorting for pending data points
-# fix mixed up order for city and state in view pois
 # change tktable to grid in view POIs or add reset
 # finish poi detail
 # put title bar on poi detail
@@ -248,13 +247,13 @@ def get_poi(vpoi,vcity,vstate,vzip,vflagged,sdate,edate):
 	# for k in filters
 
 	joincondition  = []
-	if vpoi != "None":
+	if vpoi != "any":
 		joincondition.append(" Location_Name = '" + vpoi+"'") 
 
-	if vcity != "None":
+	if vcity != "any":
 		joincondition.append(" city = '" + vcity+"'")
 
-	if vstate != "default":
+	if vstate != "any":
 		joincondition.append(" state = '" + vstate+"'")
 
 	if vzip != "": #say 00000
