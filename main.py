@@ -71,11 +71,15 @@ class LoginPage(PageTemplate):
 
 
     def login(self, controller, uname, pwd):
-        user_type  = api.login(uname, pwd)
+        try:
+            user_type  = api.login(uname, pwd)
+        except Exception as e:
+                tkMessageBox.showinfo("Error", e)
         #check login creds
         #
         if user_type == "Invalid":
             tkMessageBox.showinfo("Error", "Invalid Username or Password")
+
             return
         #   create popup window sayig its invalid
         #

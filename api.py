@@ -44,7 +44,14 @@ def login(username, password):
 	print user
 	if user == None:
 		return "Invalid"
-	print user[3]
+	if user[3] == "City Official":
+		cursor.execute("SELECT * from City_Official WHERE Username = %s;" , username)
+		approval = cursor.fetchall()[0]
+		print "approval: ", approval
+		if approval[1] != 1:
+			raise ValueError("Your account is pending approval")
+			return
+		# print user[3]
 	active_user = username
 	return user[3]
 	# except:
@@ -77,6 +84,8 @@ def add_user(username,  email, pwd, confpwd, user_type, type_args):
 		# users = cursor.fetchone()
 		if users == 0:
 			if user_type == "City Official":
+				check_citystate(type_args[0],type_args[1])
+
 				if type_args[2]=="":
 					raise ValueError("Title field is a required field for City Officials")
 					return
@@ -142,9 +151,11 @@ def add_datapoint(vpoilocation, vdatetime, vdatatype, vdatavalue):
 	# 	print 'time not valid'
 	# 	return
 	# 	#error message + print("the time given is not valid, (in the future) (i dunno what to say this correctly)")
+
 	if vpoilocation=="" or vdatetime=="" or vdatatype=="" or vdatavalue=="":
 		raise ValueError("All fields are required")
 		return
+
 	try:
 		float(vdatavalue)
 	except:
@@ -179,6 +190,7 @@ def add_poi(vpoilocation, vcity, vstate, vzip):
 	0: success
 
 	"""
+	check_citystate(vcity, vstate)
 	if vpoilocation=="" or vcity=="" or vstate=="" or vzip=="":
 		raise ValueError("All fields are required")
 		return
@@ -273,6 +285,7 @@ def get_poi(vpoi,vcity,vstate,vzip,vflagged,sdate,edate):
 	date_flagged_end
 	"""
 	# for k in filters
+	check_citystate(vcity, vstate)
 
 	joincondition  = []
 	if vpoi != "any":
@@ -462,3 +475,8 @@ def datapoint_a(f):
 
 
 
+
+
+def check_citystate(vcity, vstate):
+
+	return
