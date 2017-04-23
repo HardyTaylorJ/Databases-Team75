@@ -546,7 +546,26 @@ class POIDetail(PageTemplate):
         reset_button.grid(row=9, column=0, padx = 20, pady = 10, sticky="W")
 
         back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
-        back_button.grid(row=11, column=0, padx = 20, pady = 10, sticky="W")
+        back_button.grid(row=11, column=0, padx = 20, pady = 10, sticky="E")
+        self.flag_button = tk.Button(self, text="Flag", command=lambda :self.flag())
+        self.unflag_button = tk.Button(self, text="Unflag", command=lambda :self.unflag())
+        print api.get_flag(self.poi_name)[0]
+        if (api.get_flag(self.poi_name)[0]):
+            self.unflag_button.grid(row=11, column=1, padx = 20, pady = 10, sticky="W")
+        else:
+            self.flag_button.grid(row=11, column=1, padx = 20, pady = 10, sticky="W")
+
+    def flag(self):
+        self.flag_button.grid_forget()
+        self.unflag_button.grid(row=11, column=1, padx = 20, pady = 10, sticky="W")
+        api.flag_poi(self.poi_name)
+        return
+
+    def unflag(self):
+        self.unflag_button.grid_forget()
+        self.flag_button.grid(row=11, column=1, padx = 20, pady = 10, sticky="W")
+        api.unflag_poi(self.poi_name)
+        return
 
     def build_table(self, data_type, data_min, data_max, timedate_start, timedate_end):
         table_frame = tk.Frame(self)
@@ -619,7 +638,7 @@ class POIDetail(PageTemplate):
     def reset_filter(self, controller): #FIXME: probably need to pass an array with values to filter with
         self.table_frame.grid_forget()
         self.table_frame.destroy()
-        self.cell_frames, self.table_frame = self.build_table("any","","","","" )
+        self.cell_frames, self.table_frame = self.build_table("any","","",datetime.datetime(1970,1,1),datetime.datetime(2030,1,1) )
 
     def back(self, controller): #FIXME: probably need to pass an array with values to filter with
         controller.show_frame(OffPortalPage)

@@ -368,10 +368,20 @@ def get_poi_detail(vpoilocation, vtype, vminvalue, vmaxvalue, vmindate, vmaxdate
 
 
 def flag_poi(poi_name):
+	cursor.execute("UPDATE POI SET Flag = True, Date_Flagged  = %s Where Location_Name = %s" , (datetime.datetime.now(), poi_name))
+	conn.commit()
 	return
 
 def unflag_poi(poi_name):
+	cursor.execute("UPDATE POI SET Flag=0, Date_Flagged=NULL WHERE Location_name=%s", (poi_name))
+	conn.commit()
+
 	return
+
+def get_flag(poi_name):
+	cursor.execute("SELECT Flag FROM POI WHERE Location_Name=%s", (poi_name))
+	return cursor.fetchone()
+
 
 def get_datatypes():
 	return ["Mold", "Air Quality Reading"]
