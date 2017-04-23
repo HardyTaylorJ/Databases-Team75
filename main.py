@@ -1171,6 +1171,28 @@ class PDPPage(PageTemplate):
         main_label = tk.Label(self, text="Pending Data Points", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10)
 
 
+
+                                ## sort option menu
+        sort_options = ['Location_Name', 'Data_Type', 'Data_Value', 'Date_Time']
+        sort_var = StringVar(self)
+        sort_var.set(sort_options[0])
+        self.sort_var= sort_var
+
+        sort_dropdown = apply(OptionMenu, (self, sort_var) + tuple(sort_options))
+        sort_dropdown.grid(row=1, column=0, padx = 20, pady = 10, sticky="W")
+
+                        ## order option menu
+        order_options = ("ASC", "DESC")
+        order_var = StringVar(self)
+        order_var.set(order_options[0])
+        self.order_var = order_var
+
+        order_dropdown = apply(OptionMenu, (self, order_var) + tuple(order_options))
+        order_dropdown.grid(row=1, column=0, padx = 20, pady = 10, sticky="E")
+
+        sort_button = tk.Button(self, text="Reject", command=lambda :self.sort())
+        sort_button.grid(row=1, column=1, padx = 20, pady = 10, sticky = "W")
+        
         self.cell_frames, self.table_frame = self.build_table()
 
 
@@ -1183,6 +1205,12 @@ class PDPPage(PageTemplate):
         accept_button = tk.Button(self, text="Acept", command=lambda :self.accept_selected(self.cell_frames, self.table_frame))
         accept_button.grid(row=9, column=1, padx = 20, pady = 10, sticky = "E")
 
+    def sort(self):
+        self.table_frame.grid_forget()
+        self.table_frame.destroy()
+        self.cell_frames , self.table_frame =  self.build_table()
+        return
+
     def build_table(self):
         table_frame = tk.Frame(self)
         table_frame.grid(row=2,column=0, columnspan=2, padx=5,pady=5)
@@ -1192,7 +1220,7 @@ class PDPPage(PageTemplate):
         cell_frames = []
         # cell_frames.append(self.add_titles(table_frame, 0, titles, "darkgray")) ##a9a9a9
         self.add_titles(table_frame, 0, titles, "darkgray") ##a9a9a9
-        pending_data_points = api.get_pending_dp()
+        pending_data_points = api.get_pending_dp(self.sort_var.get(), self.order_var.get())
 
         for i in range(0,len(pending_data_points)):
             cell_frames.append(self.add_row(table_frame, i+1, pending_data_points[i], "white"))
@@ -1208,14 +1236,14 @@ class PDPPage(PageTemplate):
             api.datapoint_a(f)
             # if f[0].get() ==1:
             #     api.reject_dp(f[1], f[2])
-        print api.get_pending_dp()
+        print api.get_pending_dp(self.sort_var.get(), self.order_var.get())
         if len(cell_frames)>0: 
             api.datapoint_a(cell_frames[-1])
-        print api.get_pending_dp()
+        print api.get_pending_dp(self.sort_var.get(), self.order_var.get())
 
         if len(cell_frames)>0: 
             api.datapoint_a(cell_frames[0])
-        print api.get_pending_dp()
+        print api.get_pending_dp(self.sort_var.get(), self.order_var.get())
 
         for f in cell_frames:
             api.datapoint_a(f)
@@ -1233,14 +1261,14 @@ class PDPPage(PageTemplate):
             api.datapoint_r(f)
             # if f[0].get() ==1:
             #     api.reject_dp(f[1], f[2])
-        print api.get_pending_dp()
+        print api.get_pending_dp(self.sort_var.get(), self.order_var.get())
         if len(cell_frames)>0: 
             api.datapoint_r(cell_frames[-1])
-        print api.get_pending_dp()
+        print api.get_pending_dp(self.sort_var.get(), self.order_var.get())
 
         if len(cell_frames)>0: 
             api.datapoint_r(cell_frames[0])
-        print api.get_pending_dp()
+        print api.get_pending_dp(self.sort_var.get(), self.order_var.get())
 
         for f in cell_frames:
             api.datapoint_r(f)

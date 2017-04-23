@@ -383,8 +383,8 @@ def get_poi_report(sort_option, order_option):
 	return Thereport
 	# return [ ['01','02','03','04','05','06','07','08','09','10','11','12'], reversed([1,2,3,4,5,6,7,8,9,10,11,12]) ]
 
-def get_pending_dp():
-	mainview = "SELECT Location_Name, Data_Type, Data_Value, Date_Time FROM Data_Point WHERE Accepted IS NULL"
+def get_pending_dp(sort_option, order_option):
+	mainview = "SELECT Location_Name, Data_Type, Data_Value, Date_Time FROM Data_Point WHERE Accepted IS NULL"+ " ORDER BY " + sort_option + " " +order_option
 
 	cursor.execute(mainview)
 	return cursor.fetchall()
