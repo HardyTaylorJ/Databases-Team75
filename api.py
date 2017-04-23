@@ -20,6 +20,8 @@ active_user = None
 # finish poi detail
 # put title bar on poi detail
 # email address constraints with regex in google doc
+# handle user input stuff like zip code
+# 
 
 
 def login(username, password):

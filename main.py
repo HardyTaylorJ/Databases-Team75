@@ -826,14 +826,14 @@ class ViewPOIPage(PageTemplate):
         city_var.set(city_options[0])
 
         city_dropdown = apply(OptionMenu, (self, city_var) + tuple(city_options))
-        city_dropdown.grid(row=3, column=1, padx = 20, pady = 10, sticky="W")
+        city_dropdown.grid(row=2, column=1, padx = 20, pady = 10, sticky="W")
 
         ## state option menu
         state_options = self.get_state_options()
         state_var = StringVar(self)
         state_var.set(state_options[0])
         state_dropdown = apply(OptionMenu, (self, state_var) + tuple(state_options))
-        state_dropdown.grid(row=2, column=1, padx = 20, pady = 10, sticky="W")
+        state_dropdown.grid(row=3, column=1, padx = 20, pady = 10, sticky="W")
 
 
 
