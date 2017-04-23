@@ -347,7 +347,8 @@ def get_datapoints(filters):
 	# for k in filters.keys
 
 def get_years():
-	return list(reversed(range(1900, 2018)))
+	# datetime.now().year
+	return list(reversed(range(1900, datetime.datetime.now().year+1)))
 
 
 def get_months():
@@ -483,5 +484,12 @@ def datapoint_a(f):
 
 
 def check_citystate(vcity, vstate):
+	if(vcity!="any" and vstate!="any"):
+
+		cursor.execute("SELECT * FROM City_State WHERE City=%s AND State=%s", (vcity, vstate))
+		citystate = cursor.fetchall()
+		if len(citystate)==0:
+			raise ValueError("City and State combination not valid")
+
 
 	return
