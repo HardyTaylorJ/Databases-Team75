@@ -84,6 +84,12 @@ def add_user(username,  email, pwd, confpwd, user_type, type_args):
 	if not re.match(regex, email):
 		raise ValueError("email address not valid")
 
+	emails = cursor.execute("SELECT * FROM User WHERE Email = %s",(email))
+	if emails != 0:
+		raise ValueError('Email Already Exists')
+		return
+
+	print cursor.fetchone()
 	if confpwd == pwd:
 		users = cursor.execute("SELECT * FROM User WHERE Username = %s",(username))
 		# users = cursor.fetchone()
