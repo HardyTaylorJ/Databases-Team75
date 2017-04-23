@@ -637,51 +637,51 @@ class POIReportPage(PageTemplate):
         PageTemplate.__init__(self,parent)
         main_label = tk.Label(self, text="POI Report", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10)
 
-        # table goes here
-                ##table stuff
-        table_frame = tk.Frame(self)
-        table_frame.grid(row=2,column=0, columnspan=2, padx=0,pady=5)
-        numrows, numcols = 0, 11
+        # # table goes here
+        #         ##table stuff
+        # table_frame = tk.Frame(self)
+        # table_frame.grid(row=2,column=0, columnspan=2, padx=0,pady=5)
+        # numrows, numcols = 0, 11
 
-        var = tktable.ArrayVar(table_frame)
-        for y in range(numrows):
-            for x in range(numcols):
-                index = "%i,%i" % (y, x)
-                var[index] = index
+        # var = tktable.ArrayVar(table_frame)
+        # for y in range(numrows):
+        #     for x in range(numcols):
+        #         index = "%i,%i" % (y, x)
+        #         var[index] = index
 
-        table = tktable.Table(table_frame, 
-            rows = numrows,
-            cols = numcols,
-            state='normal',
-            titlerows=1,
-            titlecols=0,
-            colwidth=10,
-            height=10,
-            roworigin=-1,
-            colorigin=-1,
-            selectmode='extended',
-            selecttype='row',
-            rowstretch='all',
-            colstretch='last',
-            # browsecmd=browsecmd,
-            flashmode='on',
-            variable=var,
-            usecommand=0
-        )
-        scroll = Scrollbar(table_frame, orient='vertical', command=table.yview_scroll)
-        table.config(yscrollcommand=scroll.set)
-        scroll.pack(side='right', fill='y')
-        table.pack(expand=1, fill='y')
+        # table = tktable.Table(table_frame, 
+        #     rows = numrows,
+        #     cols = numcols,
+        #     state='normal',
+        #     titlerows=1,
+        #     titlecols=0,
+        #     colwidth=10,
+        #     height=10,
+        #     roworigin=-1,
+        #     colorigin=-1,
+        #     selectmode='extended',
+        #     selecttype='row',
+        #     rowstretch='all',
+        #     colstretch='last',
+        #     # browsecmd=browsecmd,
+        #     flashmode='on',
+        #     variable=var,
+        #     usecommand=0
+        # )
+        # scroll = Scrollbar(table_frame, orient='vertical', command=table.yview_scroll)
+        # table.config(yscrollcommand=scroll.set)
+        # scroll.pack(side='right', fill='y')
+        # table.pack(expand=1, fill='y')
         
-        # table.grid(row=0, column=0)
-        # scroll.grid(row=0, column=1)
-        titles = ("Location Name", "City", "State", "Zip Code", "Flagged", "Date Flagged")
-        r = table.index('end').split(',')[0]
-        print r
-        index = r + ",-1"
-        table.set("row", "-1,-1", "Results")
+        # # table.grid(row=0, column=0)
+        # # scroll.grid(row=0, column=1)
+        # titles = ("Location Name", "City", "State", "Zip Code", "Flagged", "Date Flagged")
+        # r = table.index('end').split(',')[0]
+        # print r
+        # index = r + ",-1"
+        # table.set("row", "-1,-1", "Results")
 
-        filters = []
+        # filters = []
 
         back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
         back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
@@ -702,18 +702,96 @@ class POIReportPage(PageTemplate):
         order_dropdown = apply(OptionMenu, (self, order_var) + tuple(order_options))
         order_dropdown.grid(row=1, column=0, padx = 20, pady = 10, sticky="E")
 
-        apply_button = tk.Button(self, text="Show Report", command=lambda :self.apply_filter(controller, table, sort_var.get(), order_var.get()))
+        self.cell_frames, self.table_frame = self.build_table("POI_Location","ASC")
+
+
+        apply_button = tk.Button(self, text="Sort", command=lambda :self.apply_filter(sort_var.get(), order_var.get()))
         apply_button.grid(row=1, column=1, padx = 20, pady = 10, sticky="E")
 
-    def apply_filter(self, controller, table, sort_option, order_option): #FIXME: probably need to pass an array with values to filter with
-        titles = ("POI Location", "City", "State", "Mold Min", "Mold Avg", "Mold Max", "AQ Min", "AQ Avg", "AQ Max", "# of Data points", "Flagged?")
-        r = table.index('end').split(',')[0] #get row number <str>
-        idx = r + ',-1'
-        table.set('row', idx, *titles)
-        table.see(idx)
-        pois = api.get_poi_report(sort_option, order_option)
-        for r in pois:
-            self.add_new_data(r, table)
+    def build_table(self, sort_option, order_option):
+        table_frame = tk.Frame(self)
+        table_frame.grid(row=10,column=0, columnspan=2, padx=5,pady=5)
+        numrows, numcols = 0, 6
+
+        titles = ['POI_Location', 'City', 'State', 'Mold_Min', 'Mold_Avg', 'Mold_Max', 'Aq_min', 'Aq_Avg', 'Aq_Max', 'total_data_points', 'Flagged']
+        cell_frames = []
+        # cell_frames.append(self.add_titles(table_frame, 0, titles, "darkgray")) ##a9a9a9
+        self.add_row(table_frame, 0, titles, "darkgray") ##a9a9a9
+        report = api.get_poi_report(sort_option, order_option)
+
+        for i in range(0,len(report)):
+            cell_frames.append(self.add_row(table_frame, i+1, report[i], "white"))
+
+        return cell_frames, table_frame
+
+    def add_row(self, table, r, row, bg_color):
+        # row
+        # officials_frame = tk.Frame(self, bd=1, relief=SUNKEN)
+        # r = 0
+        a_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        a_frame.grid(row=r, column=0,sticky=N+S+E+W)
+        a_label = tk.Label(a_frame, bg = bg_color, text=row[0])
+        a_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        b_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        b_frame.grid(row=r, column=1,sticky=N+S+E+W)
+        b_label = tk.Label(b_frame, bg = bg_color, text=row[1])
+        b_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        c_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        c_frame.grid(row=r, column=2,sticky=N+S+E+W)
+        c_label = tk.Label(c_frame, bg = bg_color, text=row[2])
+        c_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        d_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        d_frame.grid(row=r, column=3,sticky=N+S+E+W)
+        d_label = tk.Label(d_frame, bg = bg_color, text=row[3])
+        d_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        e_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        e_frame.grid(row=r, column=4,sticky=N+S+E+W)
+        e_label = tk.Label(e_frame, bg = bg_color, text=row[4])
+        e_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+        f_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        f_frame.grid(row=r, column=5,sticky=N+S+E+W)
+        f_label = tk.Label(f_frame, bg = bg_color, text=row[5])
+        f_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+        g_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        g_frame.grid(row=r, column=6,sticky=N+S+E+W)
+        g_label = tk.Label(g_frame, bg = bg_color, text=row[6])
+        g_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+        h_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        h_frame.grid(row=r, column=7,sticky=N+S+E+W)
+        h_label = tk.Label(h_frame, bg = bg_color, text=row[7])
+        h_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+        i_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        i_frame.grid(row=r, column=8,sticky=N+S+E+W)
+        i_label = tk.Label(i_frame, bg = bg_color, text=row[8])
+        i_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+        j_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        j_frame.grid(row=r, column=9,sticky=N+S+E+W)
+        j_label = tk.Label(j_frame, bg = bg_color, text=row[9])
+        j_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+        k_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        k_frame.grid(row=r, column=10,sticky=N+S+E+W)
+        k_label = tk.Label(k_frame, bg = bg_color, text=row[10])
+        k_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+        # l_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        # l_frame.grid(row=r, column=5,sticky=N+S+E+W)
+        # l_label = tk.Label(l_frame, bg = bg_color, text=row[5])
+        # l_label.grid(row=0, column=0, pady = 5, padx = 5,sticky=N+S+E+W)
+
+    def apply_filter(self, sort_option, order_option): #FIXME: probably need to pass an array with values to filter with
+        self.table_frame.grid_forget()
+        self.table_frame.destroy()
+        self.cell_frames, self.table_frame = self.build_table(sort_option, order_option)
 
     def add_new_data(self, row, table):
         #table.config(state='normal')
@@ -904,13 +982,6 @@ class ViewPOIPage(PageTemplate):
 
         self.cell_frames, self.table_frame = self.build_table("any","any","any","",0,"","" )
 
-        # back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
-        # back_button.grid(row=9, column=0, padx = 20, pady = 10)
-
-        # reject_button = tk.Button(self, text="Reject", command=lambda :self.reject_selected(self.cell_frames, self.table_frame))
-        # reject_button.grid(row=9, column=1, padx = 20, pady = 10, sticky = "W")
-        # accept_button = tk.Button(self, text="Acept", command=lambda :self.accept_selected(self.cell_frames, self.table_frame))
-        # accept_button.grid(row=9, column=1, padx = 20, pady = 10, sticky = "E")
 
         apply_button = tk.Button(self, text="Apply Filter", command=lambda :self.apply_filter(controller, loc_var.get(), city_var.get(), state_var.get(), zip_entry.get(), flag_var.get(), datetime.date(int(year_var.get()), int(month_var.get()), int(day_var.get())), datetime.date(int(end_year_var.get()), int(end_month_var.get()), int(end_day_var.get()))))
         apply_button.grid(row=9, column=1, padx = 20, pady = 10, sticky="E")
