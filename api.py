@@ -410,7 +410,7 @@ def get_poi_detail(vpoilocation, vtype, vminvalue, vmaxvalue, vmindate, vmaxdate
 	vjoincondition.append("Date_Time > '" + str(vmindate)+"'")
 	vjoincondition.append("Date_Time < '" + str(vmaxdate)+"'")
 	vjoincondition = " AND ".join(vjoincondition)
-	vjoincondition = " WHERE " + vjoincondition
+	vjoincondition = " WHERE " + vjoincondition + " AND Accepted = True "
 
 	cursor.execute("SELECT Data_Type, Data_Value, Date_Time FROM Data_Point {} ORDER BY Date_Time ".format(vjoincondition) )
 
