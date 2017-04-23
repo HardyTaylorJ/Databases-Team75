@@ -70,16 +70,19 @@ def add_user(username,  email, pwd, confpwd, user_type, type_args):
 
 	if username=="" or email=="" or pwd=="" or confpwd=="":
 		raise ValueError("Username, Email, Password, and Confirm Password are all required fields for all user types")
+		return
 
 	if confpwd == pwd:
 		users = cursor.execute("SELECT * FROM User WHERE Username = %s",(username))
 		# users = cursor.fetchone()
 		if users == 0:
-			cursor.execute("INSERT INTO User VALUES (%s, %s, %s, %s)", (username, email, pwd, user_type))
-			conn.commit()
 			if user_type == "City Official":
 				if type_args[2]=="":
 					raise ValueError("Title field is a required field for City Officials")
+					return
+			cursor.execute("INSERT INTO User VALUES (%s, %s, %s, %s)", (username, email, pwd, user_type))
+			conn.commit()
+			if user_type == "City Official":
 				cursor.execute("INSERT INTO City_Official VALUES (%s, %s, %s, %s, %s)",(username, None, type_args[2], type_args[0], type_args[1]))
 				conn.commit()
 		else:

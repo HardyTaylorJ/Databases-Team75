@@ -169,9 +169,12 @@ class RegisterPage(PageTemplate):
         back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
 
     def submit(self, controller, username, email, pwd, cpwd, user_type, type_args): #FIXME: probably need to pass an array with values to register with
-        api.add_user(username, email, pwd, cpwd, user_type, type_args) #FIXME: error handling
+        try:
+            api.add_user(username, email, pwd, cpwd, user_type, type_args) #FIXME: error handling
+            controller.show_frame(LoginPage)
+        except ValueError as e:
+            tkMessageBox.showinfo("Error", e)
 
-        controller.show_frame(LoginPage)
 
     def back(self, controller): #FIXME: probably need to pass an array with values to filter with
         controller.show_frame(LoginPage)
