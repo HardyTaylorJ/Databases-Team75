@@ -536,10 +536,10 @@ class POIDetail(PageTemplate):
         end_minute_dropdown = apply(OptionMenu, (end_time_frame, end_minute_var) + tuple(minute_options))
         end_minute_dropdown.grid(row=0, column=2, padx = 1, sticky="W")
 
-        self.cell_frames, self.table_frame = self.build_table("any","","","","" )
+        self.cell_frames, self.table_frame = self.build_table("any","","",datetime.datetime(1970,1,1),datetime.datetime(2030,1,1))
 
 
-        apply_button = tk.Button(self, text="Apply Filter", command=lambda :self.apply_filter(datatype_var.get(), min_dval_entry.get(), max_dval_entry.get(), datetime.datetime(int(year_var.get()), int(month_var.get()), int(day_var.get()), int(hour_var.get()), int(minute_var.get())), datetime.date(int(end_year_var.get()), int(end_month_var.get()), int(end_day.get()), int(end_hour_var.get()), int(end_minute_var.get()))))
+        apply_button = tk.Button(self, text="Apply Filter", command=lambda :self.apply_filter(datatype_var.get(), min_dval_entry.get(), max_dval_entry.get(), datetime.datetime(int(year_var.get()), int(month_var.get()), int(day_var.get()), hour=int(hour_var.get()), minute=int(minute_var.get())), datetime.datetime(int(end_year_var.get()), int(end_month_var.get()), int(end_day_var.get()), hour=int(end_hour_var.get()), minute=int(end_minute_var.get()))))
         apply_button.grid(row=9, column=1, padx = 20, pady = 10, sticky="E")
 
         reset_button = tk.Button(self, text="Reset Filter", command=lambda :self.reset_filter(controller))
@@ -558,7 +558,8 @@ class POIDetail(PageTemplate):
         # cell_frames.append(self.add_titles(table_frame, 0, titles, "darkgray")) ##a9a9a9
         self.add_row(table_frame, 0, titles, "darkgray") ##a9a9a9
         pending_data_points = api.get_poi_detail(self.poi_name, data_type, data_min, data_max, timedate_start, timedate_end)
-
+        if pending_data_points is None:
+            return cell_frames, table_frame
         for i in range(0,len(pending_data_points)):
             cell_frames.append(self.add_row(table_frame, i+1, pending_data_points[i], "white"))
 
@@ -616,7 +617,9 @@ class POIDetail(PageTemplate):
 
 
     def reset_filter(self, controller): #FIXME: probably need to pass an array with values to filter with
-        controller.show_frame(OffPortalPage)
+        self.table_frame.grid_forget()
+        self.table_frame.destroy()
+        self.cell_frames, self.table_frame = self.build_table("any","","","","" )
 
     def back(self, controller): #FIXME: probably need to pass an array with values to filter with
         controller.show_frame(OffPortalPage)

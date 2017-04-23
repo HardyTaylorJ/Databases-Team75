@@ -347,18 +347,22 @@ def get_poi_detail(vpoilocation, vtype, vminvalue, vmaxvalue, vmindate, vmaxdate
 	@returns array of length 3 arrays of format [data type, data value, timedate]
 	"""
 	vjoincondition = ["Location_Name = '"+vpoilocation+"'"]
-	if vtype != "All":
-	vjoincondition.append("Data_Type = '" vtype+"'")
+	if vtype != "any":
+		vjoincondition.append("Data_Type = '" +vtype+"'")
 
 	if vminvalue!="" and vmaxvalue!="": #FIXME: better error checking
-		vjoincondition.append("Data_Value > '" + vminvalue+ "'' AND "+  "Data_Value < '" + vmaxvalue+"'" ) 
+		vjoincondition.append("Data_Value > '" + vminvalue+ "' AND "+  "Data_Value < '" + vmaxvalue+"'" ) 
 
-	vjoincondition.append("Date_Time > '" + vminvalue+"'")
-	vjoincodition.append("Date_Time < '" + vmaxvalue+"'")
+	vjoincondition.append("Date_Time > '" + str(vmindate)+"'")
+	vjoincondition.append("Date_Time < '" + str(vmaxdate)+"'")
 	vjoincondition = " AND ".join(vjoincondition)
 	vjoincondition = " WHERE " + vjoincondition
 
-	Poidetails = cursor.execute("SELECT Data_Type, Data_Value, Date_Time FROM Data_Point {} ORDER BY Date_Time ".format(vjoincondition) )
+	cursor.execute("SELECT Data_Type, Data_Value, Date_Time FROM Data_Point {} ORDER BY Date_Time ".format(vjoincondition) )
+
+	poidetails = cursor.fetchall()
+	print poidetails
+	return poidetails
 
 	# return [[11,22,33],[66,77,88]]
 
