@@ -403,16 +403,16 @@ class OffPortalPage(PageTemplate):
 
 # class POIDetail()
 class POIDetail(PageTemplate):
-    def __init__(self, parent, controller, poi_name, poi_timedate   ):
+    def __init__(self, parent, controller, poi_name):
         PageTemplate.__init__(self,parent)
-        main_label = tk.Label(self, text="POI Details", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10, padx=20)
+        main_label = tk.Label(self, text="POI Details for "+poi_name, font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10, padx=20)
 
         type_label = tk.Label(self, text="Data Type").grid(row=1, column=0, pady = 5, sticky = 'E')
         dval_label = tk.Label(self, text="Data Value").grid(row=2, column=0, pady = 5, sticky = 'E')
 
 
          ## datatype option menu
-        datatype_options = self.get_datatype_options()
+        datatype_options = ('any',) + tuple(self.get_datatype_options())
         datatype_var = StringVar(self)
         datatype_var.set(datatype_options[0])
         datatype_dropdown = apply(OptionMenu, (self, datatype_var) + tuple(datatype_options))
@@ -535,39 +535,58 @@ class POIDetail(PageTemplate):
         end_minute_dropdown = apply(OptionMenu, (end_time_frame, end_minute_var) + tuple(minute_options))
         end_minute_dropdown.grid(row=0, column=2, padx = 1, sticky="W")
 
+        self.cell_frames, self.table_frame = self.build_table("any","","","","" )
 
 
-        # zip_entry = tk.Entry(self)
-        # zip_entry.grid(row=4, column=1, pady = 5, padx= 20, sticky="W")
+        apply_button = tk.Button(self, text="Apply Filter", command=lambda :self.apply_filter(datatype_var.get(), min_dval_entry.get(), max_dval_entry.get(), datetime.datetime(int(year_var.get()), int(month_var.get()), int(day_var.get()), int(hour_var.get()), int(minute_var.get())), datetime.date(int(end_year_var.get()), int(end_month_var.get()), int(end_day.get()), int(end_hour_var.get()), int(end_minute_var.get()))))
+        apply_button.grid(row=9, column=1, padx = 20, pady = 10, sticky="E")
 
-        # flag_var = IntVar()
-        # flag_check = Checkbutton(self, variable=flag_var)
-        # flag_check.grid(row=5, column=1, pady = 5, sticky="W", padx = 20)
+        reset_button = tk.Button(self, text="Reset Filter", command=lambda :self.reset_filter(controller))
+        reset_button.grid(row=9, column=0, padx = 20, pady = 10, sticky="W")
 
-        # ## loc option menu
-        # loc_options = ('None',) + tuple(self.get_loc_options())
-        # loc_var = StringVar(self)
-        # loc_var.set(loc_options[0])
+        back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
+        back_button.grid(row=11, column=0, padx = 20, pady = 10, sticky="W")
 
-        # loc_dropdown = apply(OptionMenu, (self, loc_var) + tuple(loc_options))
-        # loc_dropdown.grid(row=1, column=1, padx = 20, pady = 10, sticky="W")
+    def build_table(self, data_type, data_min, data_max, timedate_start, timedate_end):
+        table_frame = tk.Frame(self)
+        table_frame.grid(row=10,column=0, columnspan=2, padx=5,pady=5)
+        numrows, numcols = 0, 6
+
+        titles = ["Data Type", "Data Value", "Time&date of Readings"]
+        cell_frames = []
+        # cell_frames.append(self.add_titles(table_frame, 0, titles, "darkgray")) ##a9a9a9
+        self.add_row(table_frame, 0, titles, "darkgray") ##a9a9a9
+        pending_data_points = api.get_poi_detail(data_type, data_min, data_max, timedate_start, timedate_end)
+
+        for i in range(0,len(pending_data_points)):
+            cell_frames.append(self.add_row(table_frame, i+1, pending_data_points[i], "white"))
+
+        return cell_frames, table_frame
+
+    def add_row(self, table, r, row, bg_color):
+        # row
+        # officials_frame = tk.Frame(self, bd=1, relief=SUNKEN)
+        # r = 0
+        a_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        a_frame.grid(row=r, column=0,sticky=N+S+E+W)
+        a_label = tk.Label(a_frame, bg = bg_color, text=row[0])
+        a_label.grid(row=0, column=0, pady = 5, padx = 5)
+        # a_button = tk.Button(a_frame, text="...", command=lambda :self.detail_window(row[0]))
+        # a_button.grid(row=0, column=1, padx = 5, pady = 5, sticky="E")
+
+        b_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        b_frame.grid(row=r, column=1,sticky=N+S+E+W)
+        b_label = tk.Label(b_frame, bg = bg_color, text=row[1])
+        b_label.grid(row=0, column=0, pady = 5, padx = 5)
+
+        c_frame = tk.Frame(table, bg = bg_color, bd=1, relief=SUNKEN)
+        c_frame.grid(row=r, column=2,sticky=N+S+E+W)
+        c_label = tk.Label(c_frame, bg = bg_color, text=row[2])
+        c_label.grid(row=0, column=0, pady = 5, padx = 5)
 
 
 
-        # ## city option menu
-        # city_options = self.get_city_options()
-        # city_var = StringVar(self)
-        # city_var.set(city_options[0])
 
-        # city_dropdown = apply(OptionMenu, (self, city_var) + tuple(city_options))
-        # city_dropdown.grid(row=3, column=1, padx = 20, pady = 10, sticky="W")
-
-        # ## state option menu
-        # state_options = self.get_state_options()
-        # state_var = StringVar(self)
-        # state_var.set(state_options[0])
-        # state_dropdown = apply(OptionMenu, (self, state_var) + tuple(state_options))
-        # state_dropdown.grid(row=2, column=1, padx = 20, pady = 10, sticky="W")
 
     def get_hour_options(self):
         return api.get_hours()
@@ -580,15 +599,10 @@ class POIDetail(PageTemplate):
 
 
 
-    def apply_filter(self, controller, table, location,city,state,zipc,flag,sdate,edate): #FIXME: probably need to pass an array with values to filter with
-        titles = ("Location Name", "City", "State", "Zip Code", "Flagged", "Date Flagged")
-        r = table.index('end').split(',')[0] #get row number <str>
-        idx = r + ',-1'
-        table.set('row', idx, *titles)
-        table.see(idx)
-        filtered_poi = api.get_poi(location,city,state,zipc,flag,sdate,edate)
-        for r in filtered_poi:
-            self.add_new_data(r, table)
+    def apply_filter(self,data_type, data_min, data_max, timedate_start, timedate_end): #FIXME: probably need to pass an array with values to filter with
+        self.table_frame.grid_forget()
+        self.table_frame.destroy()
+        self.cell_frames, self.table_frame = self.build_table(data_type, data_min, data_max, timedate_start, timedate_end)
 
     def add_new_data(self, row, table):
         #table.config(state='normal')
@@ -1084,7 +1098,7 @@ class ViewPOIPage(PageTemplate):
 
     def detail_window(self, poi_name):
         window = tk.Toplevel(self)
-        frame = POIDetail(window, self, "", "")
+        frame = POIDetail(window, self, poi_name)
         # window.frames[F] = frame
         frame.grid(row=0, column = 0, sticky=N+E+S+W)
         # self.show_frame(frame)

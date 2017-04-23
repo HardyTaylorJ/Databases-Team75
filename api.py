@@ -346,7 +346,7 @@ def get_poi_detail(data_type, data_min, data_max, timedate_start, timedate_end):
 	"""
 	@returns array of length 3 arrays of format [data type, data value, timedate]
 	"""
-	return [[11,22,33][66,77,88]]
+	return [[11,22,33],[66,77,88]]
 
 
 def flag_poi(poi_name):
