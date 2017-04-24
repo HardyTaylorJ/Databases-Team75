@@ -166,7 +166,9 @@ def add_datapoint(vpoilocation, vdatetime, vdatatype, vdatavalue):
 	if vpoilocation=="" or vdatetime=="" or vdatatype=="" or vdatavalue=="":
 		raise ValueError("All fields are required")
 		return
-
+	if datetime.datetime.now() < vdatetime:
+		raise ValueError("Date cannot be in the future")
+		return
 	try:
 		float(vdatavalue)
 	except:
