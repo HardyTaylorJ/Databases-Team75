@@ -687,7 +687,7 @@ class POIDetail(PageTemplate):
 class POIReportPage(PageTemplate):
     def __init__(self, parent, controller):
         PageTemplate.__init__(self,parent)
-        main_label = tk.Label(self, text="POI Report", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10)
+        main_label = tk.Label(self, text="POI Report", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10, padx=450)
 
 
 
@@ -886,7 +886,7 @@ class POIReportPage(PageTemplate):
 class ViewPOIPage(PageTemplate):
     def __init__(self, parent, controller):
         PageTemplate.__init__(self,parent)
-        main_label = tk.Label(self, text="View POI", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10, padx=20)
+        main_label = tk.Label(self, text="View POI", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10, padx=460)
 
         locn_label = tk.Label(self, text="POI Location Name").grid(row=1, column=0, pady = 5, sticky = 'E')
         city_label = tk.Label(self, text="City").grid(row=2, column=0, pady = 5, sticky = 'E')
@@ -925,7 +925,7 @@ class ViewPOIPage(PageTemplate):
         year_dropdown = apply(OptionMenu, (date_frame, year_var) + tuple(year_options))
         year_dropdown.grid(row=0, column=4, padx = 1, sticky="W")
 
-        dateto_label = tk.Label(self, text="to").grid(row=7, column=1, pady = 0)
+        dateto_label = tk.Label(self, text="to").grid(row=7, column=1, pady = 0, sticky=W)
 
         ##end date stuff
         end_date_frame = tk.Frame(self)
