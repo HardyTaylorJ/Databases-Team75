@@ -1190,7 +1190,7 @@ class PDPPage(PageTemplate):
         order_dropdown = apply(OptionMenu, (self, order_var) + tuple(order_options))
         order_dropdown.grid(row=1, column=0, padx = 20, pady = 10, sticky="E")
 
-        sort_button = tk.Button(self, text="Reject", command=lambda :self.sort())
+        sort_button = tk.Button(self, text="Sort", command=lambda :self.sort())
         sort_button.grid(row=1, column=1, padx = 20, pady = 10, sticky = "W")
         
         self.cell_frames, self.table_frame = self.build_table()
