@@ -560,7 +560,7 @@ class POIDetail(PageTemplate):
         reset_button = tk.Button(self, text="Reset Filter", command=lambda :self.reset_filter(controller))
         reset_button.grid(row=9, column=0, padx = 20, pady = 10, sticky="W")
 
-        back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
+        back_button = tk.Button(self, text="Close", command=lambda :parent.destroy())
         back_button.grid(row=11, column=0, padx = 20, pady = 10, sticky="E")
         self.flag_button = tk.Button(self, text="Flag", command=lambda :self.flag())
         self.unflag_button = tk.Button(self, text="Unflag", command=lambda :self.unflag())
