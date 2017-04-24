@@ -475,7 +475,7 @@ class POIDetail(PageTemplate):
         #year
         year_options = self.get_year_options()
         year_var = StringVar(self)
-        year_var.set(year_options[0])
+        year_var.set(year_options[-1])
 
         year_dropdown = apply(OptionMenu, (date_frame, year_var) + tuple(year_options))
         year_dropdown.grid(row=0, column=4, padx = 1, sticky="W")
@@ -509,7 +509,7 @@ class POIDetail(PageTemplate):
         #month
         month_options = self.get_month_options()
         end_month_var = StringVar(self)
-        end_month_var.set(month_options[0])
+        end_month_var.set(month_options[-1])
 
         end_month_dropdown = apply(OptionMenu, (end_date_frame, end_month_var) + tuple(month_options))
         end_month_dropdown.grid(row=0, column=0, padx = 1, sticky="W")
@@ -518,7 +518,7 @@ class POIDetail(PageTemplate):
         #day
         day_options = self.get_day_options()
         end_day_var = StringVar(self)
-        end_day_var.set(day_options[0])
+        end_day_var.set(day_options[-1])
 
         end_day_dropdown = apply(OptionMenu, (end_date_frame, end_day_var) + tuple(day_options))
         end_day_dropdown.grid(row=0, column=2, padx = 1, sticky="W")
@@ -915,7 +915,7 @@ class ViewPOIPage(PageTemplate):
         #year
         year_options = self.get_year_options()
         year_var = StringVar(self)
-        year_var.set(year_options[0])
+        year_var.set(year_options[-1])
 
         year_dropdown = apply(OptionMenu, (date_frame, year_var) + tuple(year_options))
         year_dropdown.grid(row=0, column=4, padx = 1, sticky="W")
@@ -928,7 +928,7 @@ class ViewPOIPage(PageTemplate):
         #month
         month_options = self.get_month_options()
         end_month_var = StringVar(self)
-        end_month_var.set(month_options[0])
+        end_month_var.set(month_options[-1])
 
         end_month_dropdown = apply(OptionMenu, (end_date_frame, end_month_var) + tuple(month_options))
         end_month_dropdown.grid(row=0, column=0, padx = 1, sticky="W")
@@ -937,7 +937,7 @@ class ViewPOIPage(PageTemplate):
         #day
         day_options = self.get_day_options()
         end_day_var = StringVar(self)
-        end_day_var.set(day_options[0])
+        end_day_var.set(day_options[-1])
 
         end_day_dropdown = apply(OptionMenu, (end_date_frame, end_day_var) + tuple(day_options))
         end_day_dropdown.grid(row=0, column=2, padx = 1, sticky="W")
