@@ -16,6 +16,7 @@ class TKMain (tk.Tk):
     def __init__(self,*args,**kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         container = tk.Frame(self)
+
         container.pack(side="top", fill="both", expand = True)
 
 
@@ -45,22 +46,22 @@ class PageTemplate(tk.Frame):
 class LoginPage(PageTemplate):
     def __init__(self, parent, controller):
         PageTemplate.__init__(self,parent)
-        main_label = tk.Label(self, text="Login", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10, sticky=N+E+S+W)
+        main_label = tk.Label(self, text="Login", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10, sticky=N+E+S+W, padx=450)
 
-        uname_label = tk.Label(self, text="Username").grid(row=1, column=0, pady = 20)
-        pwd_label = tk.Label(self, text="Password").grid(row=2, column=0, pady = 20)
+        uname_label = tk.Label(self, text="Username").grid(row=1, column=0, pady = 20, sticky=E)
+        pwd_label = tk.Label(self, text="Password").grid(row=2, column=0, pady = 20, sticky=E)
 
         uname_entry = tk.Entry(self)
-        uname_entry.grid(row=1, column=1, pady = 20, padx= 20)
+        uname_entry.grid(row=1, column=1, pady = 20, padx= 20, sticky=W)
         pwd_entry = tk.Entry(self)
-        pwd_entry.grid(row=2, column=1, pady = 20, padx= 20)
+        pwd_entry.grid(row=2, column=1, pady = 20, padx= 20, sticky=W)
 
 
         reg_button = tk.Button(self, text="Register", command=lambda :self.register(controller))
         reg_button.grid(row=4, column=0, padx = 20, pady = 10)
 
         login_button = tk.Button(self, text="Login", command=lambda :self.login(controller, uname_entry.get(), pwd_entry.get()))
-        login_button.grid(row=4, column=1, padx = 20, sticky="E")
+        login_button.grid(row=4, column=1, padx = 20)
 
         # table = tktable.Table(parent, 
         #     rows = 5,
@@ -109,22 +110,22 @@ class LoginPage(PageTemplate):
 class RegisterPage(PageTemplate):
     def __init__(self, parent, controller):
         PageTemplate.__init__(self,parent)
-        main_label = tk.Label(self, text="Register", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10)
+        main_label = tk.Label(self, text="Register", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10, padx=450)
 
-        uname_label = tk.Label(self, text="Username").grid(row=1, column=0, pady = 5)
-        email_label = tk.Label(self, text="Email").grid(row=2, column=0, pady = 5)
-        pwd_label = tk.Label(self, text="Password").grid(row=3, column=0, pady = 5)
-        cpwd_label = tk.Label(self, text="Confirm Password").grid(row=4, column=0, pady = 5)
-        type_label = tk.Label(self, text="User Type").grid(row=5, column=0, pady = 5)
+        uname_label = tk.Label(self, text="Username").grid(row=1, column=0, pady = 5, sticky=E)
+        email_label = tk.Label(self, text="Email").grid(row=2, column=0, pady = 5, sticky=E)
+        pwd_label = tk.Label(self, text="Password").grid(row=3, column=0, pady = 5, sticky=E)
+        cpwd_label = tk.Label(self, text="Confirm Password").grid(row=4, column=0, pady = 5, sticky=E)
+        type_label = tk.Label(self, text="User Type").grid(row=5, column=0, pady = 5, sticky=E)
 
         uname_entry = tk.Entry(self)
-        uname_entry.grid(row=1, column=1, pady = 5, padx= 20)
+        uname_entry.grid(row=1, column=1, pady = 5, padx= 20, sticky=W)
         email_entry = tk.Entry(self)
-        email_entry.grid(row=2, column=1, pady = 5, padx= 20)
+        email_entry.grid(row=2, column=1, pady = 5, padx= 20, sticky=W)
         pwd_entry = tk.Entry(self)
-        pwd_entry.grid(row=3, column=1, pady = 5, padx= 20)
+        pwd_entry.grid(row=3, column=1, pady = 5, padx= 20, sticky=W)
         cpwd_entry = tk.Entry(self)
-        cpwd_entry.grid(row=4, column=1, pady = 5, padx= 20)
+        cpwd_entry.grid(row=4, column=1, pady = 5, padx= 20, sticky=W)
 
         #variable in the dropdown
         type_var = StringVar(self)
@@ -167,10 +168,10 @@ class RegisterPage(PageTemplate):
 
         city_official_info = (city_var.get(), state_var.get(), title_entry.get())
         sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller, uname_entry.get(),  email_entry.get(),  pwd_entry.get(), cpwd_entry.get(), type_var.get(), (city_var.get(), state_var.get(), title_entry.get())))
-        sub_button.grid(row=7, column=0, padx = 20, pady = 10)
+        sub_button.grid(row=7, column=1, padx = 20, pady = 10)
 
         back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
-        back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
+        back_button.grid(row=7, column=0, padx = 20, pady = 10)
 
     def submit(self, controller, username, email, pwd, cpwd, user_type, type_args): #FIXME: probably need to pass an array with values to register with
         try:
