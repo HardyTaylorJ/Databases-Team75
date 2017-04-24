@@ -193,10 +193,10 @@ class RegisterPage(PageTemplate):
 class SciPortalPage(PageTemplate):
     def __init__(self, parent, controller):
         PageTemplate.__init__(self,parent)
-        main_label = tk.Label(self, text="Choose Functionality", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10, )
+        main_label = tk.Label(self, text="Choose Functionality", font=LARGE_FONT).grid(row=0, column=0, pady = 10, padx=450)
 
-        add_dp_button = tk.Button(self, text="Add Data Point", command=lambda :self.add_dp(controller)).grid(row=1, column=0, padx = 20, pady = 10)
-        add_poi_button = tk.Button(self, text="Add POI", command=lambda :self.add_poi(controller)).grid(row=2, column=0, padx = 20, pady = 10)
+        add_dp_button = tk.Button(self, text="Add Data Point", command=lambda :self.add_dp(controller)).grid(row=1, column=0, padx = 20, pady = 10,sticky=N+E+S+W)
+        add_poi_button = tk.Button(self, text="Add POI", command=lambda :self.add_poi(controller)).grid(row=2, column=0, padx = 20, pady = 10,sticky=N+E+S+W)
 
         logout_button = tk.Button(self, text="Logout", command=lambda :self.logout(controller)).grid(row=3, column=0, padx = 20, pady = 10, sticky="W")
 
@@ -216,7 +216,7 @@ class SciPortalPage(PageTemplate):
 class AddDPPage(PageTemplate):
     def __init__(self, parent, controller):
         PageTemplate.__init__(self,parent)
-        main_label = tk.Label(self, text="Add Data Point", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10)
+        main_label = tk.Label(self, text="Add Data Point", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10, padx=450)
 
         locn_label = tk.Label(self, text="POI Location Name").grid(row=1, column=0, pady = 5, sticky="E")
         timedate_label = tk.Label(self, text="Time and Date of Data Reading").grid(row=2, column=0, pady = 5, sticky="E")
@@ -340,7 +340,7 @@ class AddDPPage(PageTemplate):
 class AddPOIPage(PageTemplate):
     def __init__(self, parent, controller):
         PageTemplate.__init__(self,parent)
-        main_label = tk.Label(self, text="Add a New Location", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10)
+        main_label = tk.Label(self, text="Add a New Location", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10, padx=450)
 
         locn_label = tk.Label(self, text="POI Location Name").grid(row=1, column=0, pady = 5)
         city_label = tk.Label(self, text="City").grid(row=2, column=0, pady = 5)
@@ -394,10 +394,10 @@ class AddPOIPage(PageTemplate):
 class OffPortalPage(PageTemplate):
     def __init__(self, parent, controller):
         PageTemplate.__init__(self,parent)
-        main_label = tk.Label(self, text="Choose Functionality", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10)
+        main_label = tk.Label(self, text="Choose Functionality", font=LARGE_FONT).grid(row=0, column=0, pady = 10, padx=450)
 
-        fs_poi_button = tk.Button(self, text="Filter/Search POI", command=lambda :self.fs_poi(controller)).grid(row=1, column=0, padx = 20, pady = 10)
-        poi_report_button = tk.Button(self, text="POI Report", command=lambda :self.poi_report(controller)).grid(row=2, column=0, padx = 20, pady = 10)
+        fs_poi_button = tk.Button(self, text="Filter/Search POI", command=lambda :self.fs_poi(controller)).grid(row=1, column=0, padx = 20, pady = 10,sticky=N+E+S+W)
+        poi_report_button = tk.Button(self, text="POI Report", command=lambda :self.poi_report(controller)).grid(row=2, column=0, padx = 20, pady = 10,sticky=N+E+S+W)
 
         logout_button = tk.Button(self, text="Logout", command=lambda :self.logout(controller)).grid(row=3, column=0, padx = 20, pady = 10, sticky="W")
 
@@ -422,7 +422,7 @@ class POIDetail(PageTemplate):
     def __init__(self, parent, controller, poi_name):
         PageTemplate.__init__(self,parent)
         self.poi_name = poi_name
-        main_label = tk.Label(self, text="POI Details for "+poi_name, font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10, padx=20)
+        main_label = tk.Label(self, text="POI Details for "+poi_name, font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10, padx=450)
 
         type_label = tk.Label(self, text="Data Type").grid(row=1, column=0, pady = 5, sticky = 'E')
         dval_label = tk.Label(self, text="Data Value").grid(row=2, column=0, pady = 5, sticky = 'E')
@@ -692,7 +692,7 @@ class POIReportPage(PageTemplate):
 
 
         back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
-        back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
+        back_button.grid(row=9, column=0, padx = 20, pady = 10, sticky=W)
 
                         ## sort option menu
         sort_options = ['POI_Location', 'City', 'State', 'Mold_Min', 'Mold_Avg', 'Mold_Max', 'Aq_min', 'Aq_Avg', 'Aq_Max', 'total_data_points', 'Flagged']
@@ -718,7 +718,7 @@ class POIReportPage(PageTemplate):
 
     def build_table(self, sort_option, order_option):
         table_frame = tk.Frame(self)
-        table_frame.grid(row=10,column=0, columnspan=2, padx=5,pady=5)
+        table_frame.grid(row=5,column=0, columnspan=2, padx=5,pady=5)
         numrows, numcols = 0, 6
 
         titles = ['POI_Location', 'City', 'State', 'Mold_Min', 'Mold_Avg', 'Mold_Max', 'Aq_min', 'Aq_Avg', 'Aq_Max', 'total_data_points', 'Flagged']
@@ -1156,10 +1156,10 @@ class ViewPOIPage(PageTemplate):
 class AdminPortalPage(PageTemplate):
     def __init__(self, parent, controller):
         PageTemplate.__init__(self,parent)
-        main_label = tk.Label(self, text="Choose Functionality", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10)
+        main_label = tk.Label(self, text="Choose Functionality", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10, padx=450)
 
-        pdp_button = tk.Button(self, text="Pending Data Points", command=lambda :self.pdp(controller)).grid(row=1, column=0, padx = 20, pady = 10)
-        poffacc_button = tk.Button(self, text="Pending City Official Accounts", command=lambda :self.poffacc(controller)).grid(row=2, column=0, padx = 20, pady = 10)
+        pdp_button = tk.Button(self, text="Pending Data Points", command=lambda :self.pdp(controller)).grid(row=1, column=0, padx = 20, pady = 10,sticky=N+E+S+W)
+        poffacc_button = tk.Button(self, text="Pending City Official Accounts", command=lambda :self.poffacc(controller)).grid(row=2, column=0, padx = 20, pady = 10,sticky=N+E+S+W)
 
         logout_button = tk.Button(self, text="Logout", command=lambda :self.logout(controller)).grid(row=3, column=0, padx = 20, pady = 10, sticky="W")
 
