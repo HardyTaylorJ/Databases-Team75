@@ -300,10 +300,10 @@ class AddDPPage(PageTemplate):
         datatype_dropdown.grid(row=4, column=1, padx = 20, pady = 10, sticky="W")
 
         sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller, locname_var.get(), datetime.datetime(int(year_var.get()), int(month_var.get()), int(day_var.get()), hour=int(hour_var.get()), minute=int(minute_var.get())), datatype_var.get(), dataval_entry.get()))
-        sub_button.grid(row=8, column=0, padx = 20, pady = 10)
+        sub_button.grid(row=8, column=1, padx = 20, pady = 10)
 
         back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
-        back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
+        back_button.grid(row=8, column=0, padx = 20, pady = 10)
 
     def get_hour_options(self):
         return api.get_hours()
@@ -342,15 +342,15 @@ class AddPOIPage(PageTemplate):
         PageTemplate.__init__(self,parent)
         main_label = tk.Label(self, text="Add a New Location", font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10, padx=450)
 
-        locn_label = tk.Label(self, text="POI Location Name").grid(row=1, column=0, pady = 5)
-        city_label = tk.Label(self, text="City").grid(row=2, column=0, pady = 5)
-        state_label = tk.Label(self, text="State").grid(row=3, column=0, pady = 5)
-        zip_label = tk.Label(self, text="Zip Code").grid(row=4, column=0, pady = 5)
+        locn_label = tk.Label(self, text="POI Location Name").grid(row=1, column=0, pady = 5, sticky=E)
+        city_label = tk.Label(self, text="City").grid(row=2, column=0, pady = 5, sticky=E)
+        state_label = tk.Label(self, text="State").grid(row=3, column=0, pady = 5, sticky=E)
+        zip_label = tk.Label(self, text="Zip Code").grid(row=4, column=0, pady = 5, sticky=E)
 
         locn_entry = tk.Entry(self)
-        locn_entry.grid(row=1, column=1, pady = 5, padx= 20)
+        locn_entry.grid(row=1, column=1, pady = 5, padx= 20, sticky=W)
         zip_entry = tk.Entry(self)
-        zip_entry.grid(row=4, column=1, pady = 5, padx= 20)
+        zip_entry.grid(row=4, column=1, pady = 5, padx= 20, sticky=W)
 
         ## city option menu
         city_options = self.get_city_options()
@@ -368,10 +368,10 @@ class AddPOIPage(PageTemplate):
         state_dropdown.grid(row=3, column=1, padx = 20, pady = 10, sticky="W")
 
         sub_button = tk.Button(self, text="Submit", command=lambda :self.submit(controller, locn_entry.get(), city_var.get(), state_var.get(), zip_entry.get()))
-        sub_button.grid(row=7, column=0, padx = 20, pady = 10)
+        sub_button.grid(row=7, column=1, padx = 20, pady = 10)
 
         back_button = tk.Button(self, text="Back", command=lambda :self.back(controller))
-        back_button.grid(row=9, column=0, padx = 20, pady = 10, columnspan = 2)
+        back_button.grid(row=7, column=0, padx = 20, pady = 10)
 
     def submit(self, controller, loc_name, city, state, zip_code): #FIXME: probably need to pass an array with values to register with
         try:
