@@ -193,7 +193,7 @@ class RegisterPage(PageTemplate):
 class SciPortalPage(PageTemplate):
     def __init__(self, parent, controller):
         PageTemplate.__init__(self,parent)
-        main_label = tk.Label(self, text="Choose Functionality", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10)
+        main_label = tk.Label(self, text="Choose Functionality", font=LARGE_FONT).grid(row=0, column=0,columnspan=2, pady = 10, )
 
         add_dp_button = tk.Button(self, text="Add Data Point", command=lambda :self.add_dp(controller)).grid(row=1, column=0, padx = 20, pady = 10)
         add_poi_button = tk.Button(self, text="Add POI", command=lambda :self.add_poi(controller)).grid(row=2, column=0, padx = 20, pady = 10)
@@ -590,9 +590,13 @@ class POIDetail(PageTemplate):
 
         titles = ["Data Type", "Data Value", "Time&date of Readings"]
         cell_frames = []
+        try:
+            pending_data_points = api.get_poi_detail(self.poi_name, data_type, data_min, data_max, timedate_start, timedate_end)
+        except Exception as e:
+            tkMessageBox.showinfo("Error", e)
+            return cell_frames, table_frame
         # cell_frames.append(self.add_titles(table_frame, 0, titles, "darkgray")) ##a9a9a9
         self.add_row(table_frame, 0, titles, "darkgray") ##a9a9a9
-        pending_data_points = api.get_poi_detail(self.poi_name, data_type, data_min, data_max, timedate_start, timedate_end)
         if pending_data_points is None:
             return cell_frames, table_frame
         for i in range(0,len(pending_data_points)):
@@ -1006,9 +1010,13 @@ class ViewPOIPage(PageTemplate):
 
         titles = ["Location Name", "City", "State", "Zip code", "Flagged?", "Date Flagged"]
         cell_frames = []
+        try:
+            pending_data_points = api.get_poi(location,city,state,zipc,flag,sdate,edate)
+        except Exception as e:
+            tkMessageBox.showinfo("Error", e)
+            return cell_frames, table_frame
         # cell_frames.append(self.add_titles(table_frame, 0, titles, "darkgray")) ##a9a9a9
         self.add_titles(table_frame, 0, titles, "darkgray") ##a9a9a9
-        pending_data_points = api.get_poi(location,city,state,zipc,flag,sdate,edate)
 
         for i in range(0,len(pending_data_points)):
             cell_frames.append(self.add_row(table_frame, i+1, pending_data_points[i], "white"))
