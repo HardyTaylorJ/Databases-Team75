@@ -422,7 +422,7 @@ class POIDetail(PageTemplate):
     def __init__(self, parent, controller, poi_name):
         PageTemplate.__init__(self,parent)
         self.poi_name = poi_name
-        main_label = tk.Label(self, text="POI Details for "+poi_name, font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10, padx=450)
+        main_label = tk.Label(self, text="POI Details for "+poi_name, font=LARGE_FONT).grid(row=0, column=0, columnspan=2, pady = 10)
 
         type_label = tk.Label(self, text="Data Type").grid(row=1, column=0, pady = 5, sticky = 'E')
         dval_label = tk.Label(self, text="Data Value").grid(row=2, column=0, pady = 5, sticky = 'E')
@@ -562,24 +562,24 @@ class POIDetail(PageTemplate):
         reset_button.grid(row=9, column=0, padx = 20, pady = 10, sticky="W")
 
         back_button = tk.Button(self, text="Close", command=lambda :parent.destroy())
-        back_button.grid(row=11, column=0, padx = 20, pady = 10, sticky="E")
+        back_button.grid(row=11, column=0, padx = 20, pady = 10)
         self.flag_button = tk.Button(self, text="Flag", command=lambda :self.flag())
         self.unflag_button = tk.Button(self, text="Unflag", command=lambda :self.unflag())
         print api.get_flag(self.poi_name)[0]
         if (api.get_flag(self.poi_name)[0]):
-            self.unflag_button.grid(row=11, column=1, padx = 20, pady = 10, sticky="W")
+            self.unflag_button.grid(row=11, column=1, padx = 20, pady = 10)
         else:
-            self.flag_button.grid(row=11, column=1, padx = 20, pady = 10, sticky="W")
+            self.flag_button.grid(row=11, column=1, padx = 20, pady = 10)
 
     def flag(self):
         self.flag_button.grid_forget()
-        self.unflag_button.grid(row=11, column=1, padx = 20, pady = 10, sticky="W")
+        self.unflag_button.grid(row=11, column=1, padx = 20, pady = 10)
         api.flag_poi(self.poi_name)
         return
 
     def unflag(self):
         self.unflag_button.grid_forget()
-        self.flag_button.grid(row=11, column=1, padx = 20, pady = 10, sticky="W")
+        self.flag_button.grid(row=11, column=1, padx = 20, pady = 10)
         api.unflag_poi(self.poi_name)
         return
 
@@ -1145,6 +1145,7 @@ class ViewPOIPage(PageTemplate):
 
     def detail_window(self, poi_name):
         window = tk.Toplevel(self)
+        window.title(poi_name)
         frame = POIDetail(window, self, poi_name)
         # window.frames[F] = frame
         frame.grid(row=0, column = 0, sticky=N+E+S+W)
